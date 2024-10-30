@@ -74,3 +74,6 @@ This project is licensed under the MIT License - see the LICENSE file for detail
 ## Disclaimer
 
 This project is not officially associated with Unraid. Use at your own risk.
+
+## Donate
+[![Donate with PayPal](https://www.paypalobjects.com/en_AU/i/btn/btn_donate_LG.gif)](https://www.paypal.com/donate?business=6ZV6WCPN2LSDJ&no_recurring=1&item_name=Help+me+maintain+the+Home+Assistant+UNRAID+Integration&currency_code=AUD)
