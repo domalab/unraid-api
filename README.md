@@ -1,5 +1,7 @@
 # Unraid API
 
+> **IMPORTANT NOTICE:** The Unraid API is currently under active development. It may contain bugs or incomplete features. Use at your own risk and please report any issues you encounter.
+
 Unraid API is a Python library for interacting with and managing Unraid servers. It provides a comprehensive set of tools to handle various aspects of Unraid server management, including system information, Docker containers, virtual machines, user scripts, and more.
 
 ## Features
