@@ -78,6 +78,7 @@ This project is licensed under the MIT License - see the LICENSE file for detail
 This project is not officially associated with Unraid. Use at your own risk.
 
 ## Donate
-[![Donate with PayPal](https://www.paypalobjects.com/webstatic/en_US/i/buttons/PP_logo_h_150x38.png)](https://www.paypal.com/donate?hosted_button_id=VS3VTJZW7Q8NC)
+
+[![Donate with PayPal](https://www.paypalobjects.com/webstatic/en_US/i/buttons/PP_logo_h_150x38.png)](https://www.paypal.com/donate?hosted_button_id=H8QX7K47EXPB4)
 
 
