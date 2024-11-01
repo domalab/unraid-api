@@ -78,5 +78,6 @@ This project is licensed under the MIT License - see the LICENSE file for detail
 This project is not officially associated with Unraid. Use at your own risk.
 
 ## Donate
-[![Donate with PayPal](https://raw.githubusercontent.com/stefan-niedermann/paypal-donate-button/master/paypal-donate-button.png)](https://www.paypal.com/donate?business=6ZV6WCPN2LSDJ&no_recurring=1&item_name=Help+me+maintain+the+Home+Assistant+UNRAID+Integration&currency_code=AUD)
+[![Donate with PayPal](https://www.paypalobjects.com/webstatic/en_US/i/buttons/PP_logo_h_150x38.png)](https://www.paypal.com/donate?hosted_button_id=VS3VTJZW7Q8NC)
+
 
