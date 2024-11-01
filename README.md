@@ -77,8 +77,15 @@ This project is licensed under the MIT License - see the LICENSE file for detail
 
 This project is not officially associated with Unraid. Use at your own risk.
 
-## Donate
+## Support This Project
 
-[![Donate with PayPal](https://www.paypalobjects.com/webstatic/en_US/i/buttons/PP_logo_h_150x38.png)](https://www.paypal.com/donate?hosted_button_id=H8QX7K47EXPB4)
+If you find this project useful or it has helped you in any way, please consider supporting its development. Your contributions help maintain and improve the project and allow me to dedicate more time to make it even better.
+
+You can support by:
+
+- Giving a ⭐ if you like it!
+- [![Donate with PayPal](https://www.paypalobjects.com/webstatic/en_US/i/buttons/PP_logo_h_150x38.png)](https://www.paypal.com/donate?hosted_button_id=H8QX7K47EXPB4)
+
+Thank you for your support and for helping keep this project going!
 
 
