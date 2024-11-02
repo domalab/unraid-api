@@ -85,6 +85,7 @@ You can support by:
 
 - Giving a ⭐ if you like it!
 - [![Donate with PayPal](https://www.paypalobjects.com/webstatic/en_US/i/buttons/PP_logo_h_150x38.png)](https://www.paypal.com/donate?hosted_button_id=H8QX7K47EXPB4)
+- [![Sponsor on GitHub](https://img.shields.io/badge/Sponsor%20on%20GitHub-brightgreen?style=for-the-badge&logo=github)](https://github.com/sponsors/domalab)
 
 Thank you for your support and for helping keep this project going!
 
