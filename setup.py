@@ -7,7 +7,7 @@ with open("README.md", encoding="utf-8") as f:
 
 setup(
     name="unraid-api",
-    version="0.1.0",
+    version="0.1.3",
     description="Python library for controlling and monitoring Unraid servers via GraphQL API",
     long_description=long_description,
     long_description_content_type="text/markdown",
