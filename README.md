@@ -1,282 +1,142 @@
-# Unraid GraphQL API Client
+# unraid-api: Python Library for Unraid GraphQL API
 
-This repository contains tools and scripts for testing and querying the Unraid GraphQL API. It includes both a Python client and a shell script for different usage scenarios.
+[![PyPI version](https://badge.fury.io/py/unraid-api.svg)](https://badge.fury.io/py/unraid-api)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Tests](https://github.com/domalab/pyunraid/actions/workflows/test.yml/badge.svg)](https://github.com/domalab/pyunraid/actions/workflows/test.yml)
 
-## Getting Started
+A comprehensive Python library that provides a clean, intuitive interface to Unraid's GraphQL API. It enables developers to programmatically control and monitor Unraid servers with both synchronous and asynchronous support, strong typing, and intelligent error handling.
 
-### Prerequisites
+## Features
 
-- Python 3.6+
-- Required Python packages (install with `pip install -r requirements.txt`)
-- For shell script usage: bash, curl, and optionally jq for pretty-printing JSON
+- Complete coverage of Unraid GraphQL API endpoints
+- Both synchronous and asynchronous client interfaces
+- Strongly-typed Pydantic models
+- Comprehensive error handling
+- Authentication management with token refresh
+- Support for API key authentication
+- Built-in query caching
+- Real-time subscription support
+- Extensive documentation and examples
 
-### Installation
-
-1. Clone or download this repository
-2. Install required dependencies:
-
-```bash
-pip install -r requirements.txt
-```
-
-## Usage
-
-### Python Client
-
-The Python client (`unraid_api_client.py`) provides a comprehensive interface for working with the Unraid GraphQL API.
-
-**Basic usage:**
+## Installation
 
 ```bash
-# Query basic server information
-python3 unraid_api_client.py --ip 192.168.1.100 --key YOUR_API_KEY
-
-# Query array status
-python3 unraid_api_client.py --ip 192.168.1.100 --key YOUR_API_KEY --query array
-
-# Run multiple queries
-python3 unraid_api_client.py --ip 192.168.1.100 --key YOUR_API_KEY --query all
+pip install unraid-api
 ```
 
-**Available query types:**
+## Quick Start
 
-- `info`: Basic server information
-- `versions`: Version information for OS, kernel, etc.
-- `array`: Array status overview
-- `array-disks`: Detailed array disk information
-- `parity`: Parity check status
-- `docker`: Docker containers
-- `docker-networks`: Docker networks
-- `disks`: Physical disks information
-- `network`: Network interfaces
-- `shares`: Network shares
-- `vms`: Virtual machines
-- `users`: User accounts
-- `notifications`: System notifications
-- `api-keys`: API keys information
-- `flash`: Flash storage information
-- `all`: Run all queries
+### Synchronous Usage
 
-**Additional options:**
+```python
+from pyunraid import UnraidClient
 
-- `--https`: Use HTTPS instead of HTTP
-- `--direct`: Skip redirect detection and connect directly to the IP
-- `--custom "query { ... }"`: Run a custom GraphQL query
-- `--important-only`: When querying notifications, only show important ones
+# Connect to Unraid server with API key
+client = UnraidClient("192.168.1.10", api_key="your-api-key")
 
-### Shell Script
+# Or with username/password
+client = UnraidClient("192.168.1.10")
+client.login("username", "password")
 
-The shell script (`test_api_curl.sh`) provides a simpler alternative using curl:
+# Get system info
+system_info = client.get_system_info()
+print(f"System version: {system_info.version}")
 
-```bash
-# Query basic server information
-./test_api_curl.sh --ip 192.168.1.100 --key YOUR_API_KEY
+# Start the array
+client.array.start_array()
 
-# Query docker containers
-./test_api_curl.sh --ip 192.168.1.100 --key YOUR_API_KEY --type docker
-
-# Use HTTPS
-./test_api_curl.sh --ip 192.168.1.100 --key YOUR_API_KEY --https --type network
+# Get Docker containers
+containers = client.docker.get_containers()
+for container in containers:
+    print(f"Container: {container.name}, Status: {container.status}")
 ```
 
-## Using the Unraid API
+### Asynchronous Usage
 
-The Unraid API provides a GraphQL interface that allows you to interact with your Unraid server. This section will help you get started with exploring and using the API.
+```python
+import asyncio
+from pyunraid.client_async import AsyncUnraidClient
 
-### Enabling the GraphQL Sandbox
+async def main():
+    client = AsyncUnraidClient("192.168.1.10")
+    await client.login("username", "password")
+    
+    # Get all Docker containers
+    containers = await client.docker.get_containers()
+    for container in containers:
+        print(f"Container: {container.name}, Status: {container.status}")
+    
+    # Perform a parity check
+    await client.array.start_parity_check()
 
-1. First, enable developer mode using the CLI:
-
-    ```bash
-    unraid-api developer
-    ```
-
-2. Follow the prompts to enable the sandbox. This will allow you to access the Apollo Sandbox interface.
-
-3. Access the GraphQL playground by navigating to:
-
-    ```txt
-    http://YOUR_SERVER_IP/graphql
-    ```
-
-### Authentication
-
-Most queries and mutations require authentication. You can authenticate using either:
-
-1. API Keys
-2. Cookies (default method when signed into the WebGUI)
-
-#### Creating an API Key
-
-Use the CLI to create an API key:
-
-```bash
-unraid-api apikey --create
+asyncio.run(main())
 ```
 
-Follow the prompts to set:
+## API Documentation
 
-- Name
-- Description
-- Roles
-- Permissions
+### Core Resources
 
-The generated API key should be included in your GraphQL requests as a header:
+- **Array**: Control and monitor the Unraid array
+  - `start_array()`, `stop_array()`, `get_array_status()`
+- **Disk**: Manage disks and storage
+  - `get_disks()`, `mount_disk()`, `unmount_disk()`
+- **Docker**: Control Docker containers
+  - `get_containers()`, `start_container()`, `stop_container()`, `restart_container()`
+- **VM**: Manage virtual machines
+  - `get_vms()`, `start_vm()`, `stop_vm()`, `restart_vm()`
+- **System**: System operations and information
+  - `reboot()`, `shutdown()`, `get_system_info()`
+- **User**: Manage users and permissions
+  - `get_users()`, `add_user()`, `delete_user()`
+- **Notification**: Handle Unraid notifications
+  - `get_notifications()`, `create_notification()`, `archive_notification()`
 
-```json
-{
-    "x-api-key": "YOUR_API_KEY"
-}
+## Advanced Usage
+
+### Real-time Subscriptions
+
+```python
+import asyncio
+from pyunraid.client_async import AsyncUnraidClient
+
+async def main():
+    client = AsyncUnraidClient("192.168.1.10")
+    await client.login("username", "password")
+    
+    # Subscribe to Docker container updates
+    async for update in client.docker.subscribe_to_containers():
+        print(f"Container update: {update.name} is now {update.status}")
+
+asyncio.run(main())
 ```
 
-## GraphQL Schema
+### Error Handling
 
-The Unraid GraphQL API provides access to various aspects of your Unraid server:
+```python
+from pyunraid import UnraidClient
+from pyunraid.exceptions import AuthenticationError, ConnectionError, GraphQLError
 
-### Available Schemas
-
-- Server information (CPU, memory, OS)
-- Array status and disk management
-- Docker containers and networks
-- Network interfaces and shares
-- Virtual machines
-- User accounts
-- Notifications
-- API key management
-- And more...
-
-### Schema Types
-
-The API includes several core types:
-
-#### Base Types
-
-- `Node`: Interface for objects with unique IDs - please see [Object Identification](https://graphql.org/learn/global-object-identification/)
-- `JSON`: For complex JSON data
-- `DateTime`: For timestamp values
-- `Long`: For 64-bit integers
-
-#### Resource Types
-
-- `Array`: Array and disk management
-- `Docker`: Container and network management
-- `Info`: System information
-- `Config`: Server configuration
-- `Connect`: Remote access settings
-
-### Role-Based Access
-
-Available roles:
-
-- `admin`: Full access
-- `connect`: Remote access features
-- `guest`: Limited read access
-
-## Example Queries
-
-Here are example GraphQL queries you can use:
-
-### System Information
-
-```graphql
-query {
-    info {
-        os {
-            platform
-            distro
-            release
-            uptime
-        }
-        cpu {
-            manufacturer
-            brand
-            cores
-            threads
-        }
-        memory {
-            total
-            free
-            used
-        }
-    }
-}
+try:
+    client = UnraidClient("192.168.1.10")
+    client.login("username", "wrong-password")
+except AuthenticationError as e:
+    print(f"Authentication failed: {e}")
+except ConnectionError as e:
+    print(f"Connection error: {e}")
+except GraphQLError as e:
+    print(f"GraphQL error: {e}")
 ```
 
-### Array Status
+## Contributing
 
-```graphql
-query {
-    array {
-        state
-        capacity {
-            disks {
-                free
-                used
-                total
-            }
-        }
-        disks {
-            name
-            size
-            status
-            temp
-        }
-    }
-}
-```
+Contributions are welcome! Please feel free to submit a Pull Request.
 
-### Docker Containers
-
-```graphql
-query {
-    dockerContainers {
-        id
-        names
-        state
-        status
-        autoStart
-        image
-    }
-}
-```
-
-## Best Practices
-
-1. Use the Apollo Sandbox to explore the schema and test queries
-2. Start with small queries and gradually add fields as needed
-3. Monitor your query complexity to maintain performance
-4. Use appropriate roles and permissions for your API keys
-5. Keep your API keys secure and rotate them periodically
-
-## Rate Limiting
-
-The API implements rate limiting to prevent abuse. Ensure your applications handle rate limit responses appropriately.
-
-## Error Handling
-
-The API returns standard GraphQL errors in the following format:
-
-```json
-{
-  "errors": [
-    {
-      "message": "Error description",
-      "locations": [...],
-      "path": [...]
-    }
-  ]
-}
-```
-
-## Additional Resources
-
-- Use the Apollo Sandbox's schema explorer to browse all available types and fields
-- Check the documentation tab in Apollo Sandbox for detailed field descriptions
-- Monitor the API's health using `unraid-api status`
-- Generate reports using `unraid-api report` for troubleshooting
-
-For more information about specific commands and configuration options, refer to the CLI documentation or run `unraid-api --help`.
+1. Fork the repository
+2. Create your feature branch (`git checkout -b feature/amazing-feature`)
+3. Commit your changes (`git commit -m 'Add some amazing feature'`)
+4. Push to the branch (`git push origin feature/amazing-feature`)
+5. Open a Pull Request
 
 ## License
 
-This project is open-source software provided as-is.
+This project is licensed under the MIT License - see the LICENSE file for details.

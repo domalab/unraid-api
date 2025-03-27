@@ -1,9 +1,16 @@
 from setuptools import setup, find_packages
+import os
+
+# Read the contents of README.md
+with open("README.md", encoding="utf-8") as f:
+    long_description = f.read()
 
 setup(
-    name="pyunraid",
-    version="0.1.0",
-    description="Python library for Unraid GraphQL API",
+    name="unraid-api",
+    version="0.1.1",
+    description="Python library for controlling and monitoring Unraid servers via GraphQL API",
+    long_description=long_description,
+    long_description_content_type="text/markdown",
     author="Ruaan Deysel",
     author_email="ruaan.deysel@gmail.com",
     url="https://github.com/domalab/pyunraid",
@@ -34,5 +41,11 @@ setup(
             "isort>=5.10.0",
             "mypy>=0.950",
         ],
+    },
+    keywords=["unraid", "api", "graphql", "home-assistant", "automation", "nas"],
+    project_urls={
+        "Documentation": "https://github.com/domalab/pyunraid",
+        "Source": "https://github.com/domalab/pyunraid",
+        "Bug Tracker": "https://github.com/domalab/pyunraid/issues",
     },
 )
