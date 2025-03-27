@@ -24,6 +24,8 @@ A comprehensive Python library that provides a clean, intuitive interface to Unr
 pip install unraid-api
 ```
 
+**Note:** While the package is installed with `pip install unraid-api`, you import it in your code using `import pyunraid` or `from pyunraid import UnraidClient`.
+
 ## Quick Start
 
 ### Synchronous Usage
