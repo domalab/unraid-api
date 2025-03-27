@@ -13,7 +13,7 @@ setup(
     long_description_content_type="text/markdown",
     author="Ruaan Deysel",
     author_email="ruaan.deysel@gmail.com",
-    url="https://github.com/domalab/pyunraid",
+    url="https://github.com/domalab/unraid-api",
     packages=find_packages(),
     classifiers=[
         "Development Status :: 3 - Alpha",
@@ -31,6 +31,7 @@ setup(
         "graphql-core>=3.2.0",
         "typeguard>=2.13.0",
         "websockets>=10.3",
+        "rich>=12.0.0",
     ],
     extras_require={
         "dev": [
@@ -42,10 +43,15 @@ setup(
             "mypy>=0.950",
         ],
     },
+    entry_points={
+        "console_scripts": [
+            "unraid-cli=unraid_api.cli.client:main",
+        ],
+    },
     keywords=["unraid", "api", "graphql", "home-assistant", "automation", "nas"],
     project_urls={
-        "Documentation": "https://github.com/domalab/pyunraid",
-        "Source": "https://github.com/domalab/pyunraid",
-        "Bug Tracker": "https://github.com/domalab/pyunraid/issues",
+        "Documentation": "https://github.com/domalab/unraid-api",
+        "Source": "https://github.com/domalab/unraid-api",
+        "Bug Tracker": "https://github.com/domalab/unraid-api/issues",
     },
-)
+) 

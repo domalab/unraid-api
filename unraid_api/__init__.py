@@ -1,9 +1,9 @@
-"""PyUnraid: Python Library for Unraid GraphQL API."""
+"""Unraid API: Python Library for Unraid GraphQL API."""
 
 from .client import UnraidClient
 from .client_async import AsyncUnraidClient
 from .exceptions import (
-    PyUnraidError,
+    UnraidAPIError,
     AuthenticationError,
     TokenExpiredError,
     ConnectionError,
@@ -16,11 +16,11 @@ from .exceptions import (
     RateLimitError,
 )
 
-__version__ = "0.1.0"
+__version__ = "0.1.2"
 __all__ = [
     "UnraidClient",
     "AsyncUnraidClient",
-    "PyUnraidError",
+    "UnraidAPIError",
     "AuthenticationError",
     "TokenExpiredError",
     "ConnectionError",

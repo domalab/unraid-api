@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
 Unraid API Client
-A command-line tool to query information from an Unraid server using the pyunraid library.
+A command-line tool to query information from an Unraid server using the unraid_api library.
 """
 
 import argparse
@@ -21,16 +21,16 @@ from rich import box
 
 # Import UnraidClient
 try:
-    sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-    from pyunraid.client import UnraidClient
-    from pyunraid.exceptions import GraphQLError, APIError, AuthenticationError
+    from unraid_api.client import UnraidClient
+    from unraid_api.exceptions import GraphQLError, APIError, AuthenticationError
 except ImportError:
     try:
-        # Try relative import from current directory
-        from pyunraid.pyunraid.client import UnraidClient
-        from pyunraid.pyunraid.exceptions import GraphQLError, APIError, AuthenticationError
+        # Fallback for development/testing environments
+        sys.path.append(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
+        from unraid_api.client import UnraidClient
+        from unraid_api.exceptions import GraphQLError, APIError, AuthenticationError
     except ImportError:
-        print("ERROR: Cannot import UnraidClient. Make sure the pyunraid package is installed or in the correct path.")
+        print("ERROR: Cannot import UnraidClient. Make sure the unraid-api package is installed or in the correct path.")
         sys.exit(1)
 
 # Setup logging

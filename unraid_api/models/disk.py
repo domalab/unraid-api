@@ -1,4 +1,4 @@
-"""Disk data models for pyunraid."""
+"""Disk data models for unraid_api."""
 from typing import List, Optional, Dict, Any
 from pydantic import BaseModel, Field
 

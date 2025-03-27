@@ -1,4 +1,4 @@
-"""System information models for pyunraid."""
+"""System information models for unraid_api."""
 from typing import List, Optional, Dict, Any
 
 from pydantic import BaseModel, Field

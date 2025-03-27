@@ -1,4 +1,4 @@
-"""Notification models for pyunraid."""
+"""Notification models for unraid_api."""
 from typing import Dict, List, Optional, Any, Union, Literal
 from enum import Enum
 

@@ -1,4 +1,4 @@
-"""Array data models for pyunraid."""
+"""Array data models for unraid_api."""
 from datetime import datetime
 from typing import List, Optional, Dict, Any
 

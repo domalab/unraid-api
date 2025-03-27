@@ -1,4 +1,4 @@
-"""Models module for pyunraid."""
+"""Models module for unraid_api."""
 
 __all__ = [
     "array",

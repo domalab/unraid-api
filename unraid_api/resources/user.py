@@ -1,4 +1,4 @@
-"""User resource for pyunraid."""
+"""User resource for unraid_api."""
 import logging
 from typing import Any, Dict, List, Optional, Union
 

@@ -32,10 +32,10 @@ jobs:
     - name: Run tests
       run: |
         cd $(find . -name "setup.py" | xargs dirname)
-        pytest --cov=pyunraid || true  # Adding || true to continue even if tests fail for now
+        pytest --cov=unraid_api || true  # Adding || true to continue even if tests fail for now
     - name: Check code formatting
       run: |
         cd $(find . -name "setup.py" | xargs dirname)
         pip install black isort
-        black --check pyunraid || true
-        isort --check pyunraid || true 
+        black --check unraid_api || true
+        isort --check unraid_api || true 

@@ -13,7 +13,7 @@ This project uses PyPI's OpenID Connect (OIDC) integration with GitHub Actions. 
 The integration has already been set up with the following parameters:
 - PyPI Project Name: `unraid-api`
 - GitHub Owner: `domalab`
-- Repository name: `pyunraid`
+- Repository name: `unraid-api`
 - Workflow name: `publish.yml`
 
 ## Creating a Release

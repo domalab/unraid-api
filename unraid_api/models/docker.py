@@ -1,4 +1,4 @@
-"""Docker models for pyunraid."""
+"""Docker models for unraid_api."""
 from typing import Dict, List, Optional, Any, Union
 
 from pydantic import BaseModel, ConfigDict, Field

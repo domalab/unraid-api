@@ -1,4 +1,4 @@
-"""Authentication module for pyunraid."""
+"""Authentication module for unraid_api."""
 import time
 import json
 import logging

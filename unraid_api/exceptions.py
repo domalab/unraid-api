@@ -1,11 +1,11 @@
-"""Exceptions for the pyunraid library."""
+"""Exceptions for the unraid_api library."""
 
-class PyUnraidError(Exception):
-    """Base exception for pyunraid errors."""
+class UnraidAPIError(Exception):
+    """Base exception for unraid_api errors."""
     pass
 
 
-class AuthenticationError(PyUnraidError):
+class AuthenticationError(UnraidAPIError):
     """Raised when authentication fails."""
     pass
 
@@ -15,45 +15,45 @@ class TokenExpiredError(AuthenticationError):
     pass
 
 
-class ConnectionError(PyUnraidError):
+class ConnectionError(UnraidAPIError):
     """Raised when a connection to the Unraid server fails."""
     pass
 
 
-class APIError(PyUnraidError):
+class APIError(UnraidAPIError):
     """Raised when the Unraid API returns an error."""
     def __init__(self, message, errors=None):
         super().__init__(message)
         self.errors = errors
 
 
-class ValidationError(PyUnraidError):
+class ValidationError(UnraidAPIError):
     """Raised when input validation fails."""
     pass
 
 
-class ResourceNotFoundError(PyUnraidError):
+class ResourceNotFoundError(UnraidAPIError):
     """Raised when a requested resource is not found."""
     pass
 
 
-class OperationError(PyUnraidError):
+class OperationError(UnraidAPIError):
     """Raised when an operation fails."""
     pass
 
 
-class GraphQLError(PyUnraidError):
+class GraphQLError(UnraidAPIError):
     """Raised when a GraphQL error occurs."""
     def __init__(self, message, errors=None):
         super().__init__(message)
         self.errors = errors
 
 
-class SubscriptionError(PyUnraidError):
+class SubscriptionError(UnraidAPIError):
     """Raised when a subscription operation fails."""
     pass
 
 
-class RateLimitError(PyUnraidError):
+class RateLimitError(UnraidAPIError):
     """Raised when rate limits are exceeded."""
     pass

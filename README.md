@@ -2,7 +2,7 @@
 
 [![PyPI version](https://badge.fury.io/py/unraid-api.svg)](https://badge.fury.io/py/unraid-api)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Tests](https://github.com/domalab/pyunraid/actions/workflows/test.yml/badge.svg)](https://github.com/domalab/pyunraid/actions/workflows/test.yml)
+[![Tests](https://github.com/domalab/unraid-api/actions/workflows/test.yml/badge.svg)](https://github.com/domalab/unraid-api/actions/workflows/test.yml)
 
 A comprehensive Python library that provides a clean, intuitive interface to Unraid's GraphQL API. It enables developers to programmatically control and monitor Unraid servers with both synchronous and asynchronous support, strong typing, and intelligent error handling.
 
@@ -17,6 +17,7 @@ A comprehensive Python library that provides a clean, intuitive interface to Unr
 - Built-in query caching
 - Real-time subscription support
 - Extensive documentation and examples
+- Command-line interface tool
 
 ## Installation
 
@@ -24,14 +25,14 @@ A comprehensive Python library that provides a clean, intuitive interface to Unr
 pip install unraid-api
 ```
 
-**Note:** While the package is installed with `pip install unraid-api`, you import it in your code using `import pyunraid` or `from pyunraid import UnraidClient`.
+**Note:** While the package is installed with `pip install unraid-api`, you import it in your code using `import unraid-api` or `from unraid-api import UnraidClient`.
 
 ## Quick Start
 
 ### Synchronous Usage
 
 ```python
-from pyunraid import UnraidClient
+from unraid_api import UnraidClient
 
 # Connect to Unraid server with API key
 client = UnraidClient("192.168.1.10", api_key="your-api-key")
@@ -57,7 +58,7 @@ for container in containers:
 
 ```python
 import asyncio
-from pyunraid.client_async import AsyncUnraidClient
+from unraid_api import AsyncUnraidClient
 
 async def main():
     client = AsyncUnraidClient("192.168.1.10")
@@ -72,6 +73,21 @@ async def main():
     await client.array.start_parity_check()
 
 asyncio.run(main())
+```
+
+### Command-line Interface
+
+The package also includes a command-line interface for quick interactions with Unraid servers:
+
+```bash
+# Display system information
+unraid-cli --ip 192.168.1.10 --api-key YOUR_API_KEY system
+
+# List Docker containers
+unraid-cli --ip 192.168.1.10 --api-key YOUR_API_KEY docker
+
+# Show array status
+unraid-cli --ip 192.168.1.10 --api-key YOUR_API_KEY array
 ```
 
 ## API Documentation
@@ -99,7 +115,7 @@ asyncio.run(main())
 
 ```python
 import asyncio
-from pyunraid.client_async import AsyncUnraidClient
+from unraid_api import AsyncUnraidClient
 
 async def main():
     client = AsyncUnraidClient("192.168.1.10")
@@ -115,8 +131,8 @@ asyncio.run(main())
 ### Error Handling
 
 ```python
-from pyunraid import UnraidClient
-from pyunraid.exceptions import AuthenticationError, ConnectionError, GraphQLError
+from unraid_api import UnraidClient
+from unraid_api.exceptions import AuthenticationError, ConnectionError, GraphQLError
 
 try:
     client = UnraidClient("192.168.1.10")

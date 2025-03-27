@@ -1,4 +1,4 @@
-"""Resources module for pyunraid."""
+"""Resources module for unraid_api."""
 
 __all__ = [
     "array",

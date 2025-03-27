@@ -1,4 +1,4 @@
-"""Subscription module for pyunraid."""
+"""Subscription module for unraid_api."""
 import asyncio
 import json
 import logging
