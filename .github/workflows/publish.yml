@@ -7,9 +7,6 @@ on:
 jobs:
   deploy:
     runs-on: ubuntu-latest
-    permissions:
-      id-token: write  # IMPORTANT: this permission is required for OIDC
-      contents: read
     steps:
     - uses: actions/checkout@v3
     - name: Set up Python
@@ -24,14 +21,17 @@ jobs:
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
-        pip install build
+        pip install build twine
     - name: Build package
       run: |
         cd $(find . -name "setup.py" | xargs dirname)
         pwd
         ls -la
         python -m build
-    - name: Publish package
-      uses: pypa/gh-action-pypi-publish@release/v1
-      with:
-        packages-dir: ./pyunraid/dist/ 
+    - name: Upload package
+      env:
+        TWINE_USERNAME: ${{ secrets.PYPI_USERNAME }}
+        TWINE_PASSWORD: ${{ secrets.PYPI_PASSWORD }}
+      run: |
+        cd $(find . -name "setup.py" | xargs dirname)
+        twine upload dist/* 
