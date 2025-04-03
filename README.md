@@ -24,7 +24,43 @@ A comprehensive Python library that provides a clean, intuitive interface to Unr
 pip install unraid-api
 ```
 
-**Note:** While the package is installed with `pip install unraid-api`, you import it in your code using `import unraid-api` or `from unraid-api import UnraidClient`.
+**Note:** While the package is installed with `pip install unraid-api`, you import it in your code using `import unraid_api` or `from unraid_api import UnraidClient`.
+
+## Enabling the Unraid GraphQL API
+
+Before you can use this library, you need to enable the GraphQL API on your Unraid server and generate an API key.
+
+### Enabling the GraphQL Sandbox
+
+1. Enable developer mode using the CLI on your Unraid server:
+
+   ```bash
+   unraid-api developer
+   ```
+
+2. Follow the prompts to enable the sandbox. This will allow you to access the Apollo Sandbox interface.
+
+3. Access the GraphQL playground by navigating to:
+
+   ```plaintext
+   http://YOUR_SERVER_IP/graphql
+   ```
+
+### Creating an API Key
+
+1. Use the CLI on your Unraid server to create an API key:
+
+   ```bash
+   unraid-api apikey --create
+   ```
+
+2. Follow the prompts to set:
+   - Name
+   - Description
+   - Roles
+   - Permissions
+
+3. The generated API key should be used with this library as shown in the examples below.
 
 ## Quick Start
 
@@ -115,8 +151,7 @@ import asyncio
 from unraid_api import AsyncUnraidClient
 
 async def main():
-    client = AsyncUnraidClient("192.168.1.10")
-    await client.login("username", "password")
+    client = AsyncUnraidClient("192.168.1.10", api_key="your-api-key")
 
     # Subscribe to Docker container updates
     async for update in client.docker.subscribe_to_containers():
@@ -129,17 +164,17 @@ asyncio.run(main())
 
 ```python
 from unraid_api import UnraidClient
-from unraid_api.exceptions import AuthenticationError, ConnectionError, GraphQLError
+from unraid_api.exceptions import AuthenticationError, ConnectionError, APIError
 
 try:
-    client = UnraidClient("192.168.1.10")
-    client.login("username", "wrong-password")
+    client = UnraidClient("192.168.1.10", api_key="invalid-api-key")
+    system_info = client.info.get_system_info()
 except AuthenticationError as e:
     print(f"Authentication failed: {e}")
 except ConnectionError as e:
     print(f"Connection error: {e}")
-except GraphQLError as e:
-    print(f"GraphQL error: {e}")
+except APIError as e:
+    print(f"API error: {e}")
 ```
 
 ## Contributing
