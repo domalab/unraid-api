@@ -67,28 +67,19 @@ def setup_unraid_client(host: str, api_key: str) -> UnraidClient:
 
 ## Authentication
 
-The library supports two authentication methods:
-
-1. API Key Authentication (Recommended)
-2. Username/Password Authentication
+The Unraid GraphQL API only supports API key authentication. Username/password authentication is not supported.
 
 ### API Key Authentication
 
 ```python
-# Using API Key (Recommended)
+# Using API Key
 client = AsyncUnraidClient(
     host="your-unraid-server",
     api_key="your-api-key"
 )
 ```
 
-### Username/Password Authentication
-
-```python
-# Using Username/Password
-client = AsyncUnraidClient(host="your-unraid-server")
-await client.login("username", "password")
-```
+API keys should be created in the Unraid WebUI under Settings > Management Access > API Keys.
 
 ## Available Resources
 
@@ -96,8 +87,24 @@ The library provides access to various Unraid resources through the client:
 
 ### Array Operations
 ```python
-# Get array status
+# Get array status (includes boot device and pool devices)
 array_status = await client.array.get_array_status()
+
+# Access boot device information
+boot_device = array_status.get("boot")
+if boot_device:
+    print(f"Boot device: {boot_device['name']} ({boot_device['device']})")
+    if boot_device.get("fsType"):
+        print(f"Filesystem type: {boot_device['fsType']}")
+
+# Access cache pools information
+caches = array_status.get("caches", [])
+for cache in caches:
+    print(f"Cache: {cache['id']}")
+    for pool in cache.get("pools", []):
+        print(f"  Pool: {pool['name']} - Size: {pool['size']} - Used: {pool['used']}")
+        for device in pool.get("devices", []):
+            print(f"    Device: {device['name']} ({device['device']})")
 
 # Start array
 await client.array.start_array()
@@ -123,8 +130,14 @@ await client.docker.restart_container("container_name")
 
 ### System Information
 ```python
-# Get system info
+# Get system info (includes CPU and motherboard temperature)
 system_info = await client.info.get_system_info()
+
+# Access CPU temperature
+cpu_temp = system_info["cpu"]["temperature"]
+
+# Access motherboard temperature
+motherboard_temp = system_info["system"]["temperature"]
 
 # Reboot server
 await client.info.reboot()
@@ -137,6 +150,28 @@ await client.info.shutdown()
 ```python
 # Get disk information
 disks = await client.disk.get_disks()
+
+# Get specific disk (includes spindown status)
+disk = await client.disk.get_disk("disk_id")
+
+# Check filesystem type
+if disk.get("fsType"):
+    print(f"Filesystem type: {disk['fsType']}")
+
+# Check if disk is spun down
+if disk.get("spindownStatus") == "spundown":
+    print(f"Disk is spun down. Last spindown time: {disk.get('lastSpindownTime')}")
+
+# Get SMART data for a disk
+smart_data = await client.disk.get_disk_smart("disk_id")
+
+# Check SMART status
+if smart_data.get("status") == "PASSED":
+    print("SMART status is good")
+
+# Access SMART attributes
+for attribute in smart_data.get("attributes", []):
+    print(f"Attribute {attribute['id']}: {attribute['name']} = {attribute['value']}")
 
 # Mount disk
 await client.disk.mount_disk("disk_id")
@@ -229,7 +264,7 @@ class UnraidDataUpdateCoordinator:
             system_info = await self.client.info.get_system_info()
             array_status = await self.client.array.get_array_status()
             containers = await self.client.docker.get_containers()
-            
+
             return {
                 "system_info": system_info,
                 "array_status": array_status,
@@ -330,4 +365,4 @@ async def async_setup_services(hass: HomeAssistant, config: ConfigType) -> None:
 ## Additional Resources
 
 - [Home Assistant Integration Documentation](https://developers.home-assistant.io/docs/creating_integration)
-- [unraid-api GitHub Repository](https://github.com/domalab/unraid-api) 
+- [unraid-api GitHub Repository](https://github.com/domalab/unraid-api)

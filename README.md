@@ -12,8 +12,7 @@ A comprehensive Python library that provides a clean, intuitive interface to Unr
 - Both synchronous and asynchronous client interfaces
 - Strongly-typed Pydantic models
 - Comprehensive error handling
-- Authentication management with token refresh
-- Support for API key authentication
+- API key authentication
 - Built-in query caching
 - Real-time subscription support
 - Extensive documentation and examples
@@ -37,9 +36,8 @@ from unraid_api import UnraidClient
 # Connect to Unraid server with API key
 client = UnraidClient("192.168.1.10", api_key="your-api-key")
 
-# Or with username/password
-client = UnraidClient("192.168.1.10")
-client.login("username", "password")
+# Note: Unraid servers often redirect to myunraid.net domains
+# The client automatically handles these redirects
 
 # Get system info
 system_info = client.get_system_info()
@@ -61,14 +59,13 @@ import asyncio
 from unraid_api import AsyncUnraidClient
 
 async def main():
-    client = AsyncUnraidClient("192.168.1.10")
-    await client.login("username", "password")
-    
+    client = AsyncUnraidClient("192.168.1.10", api_key="your-api-key")
+
     # Get all Docker containers
     containers = await client.docker.get_containers()
     for container in containers:
         print(f"Container: {container.name}, Status: {container.status}")
-    
+
     # Perform a parity check
     await client.array.start_parity_check()
 
@@ -120,7 +117,7 @@ from unraid_api import AsyncUnraidClient
 async def main():
     client = AsyncUnraidClient("192.168.1.10")
     await client.login("username", "password")
-    
+
     # Subscribe to Docker container updates
     async for update in client.docker.subscribe_to_containers():
         print(f"Container update: {update.name} is now {update.status}")

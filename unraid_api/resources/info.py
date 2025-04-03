@@ -9,21 +9,21 @@ logger = logging.getLogger(__name__)
 
 class InfoResource:
     """System information resource for the Unraid GraphQL API."""
-    
+
     def __init__(self, client):
         """Initialize the info resource.
-        
+
         Args:
             client: The Unraid client
         """
         self.client = client
-    
+
     def get_system_info(self) -> Dict[str, Any]:
         """Get system information.
-        
+
         Returns:
             System information
-            
+
         Raises:
             Various exceptions from execute_query
         """
@@ -48,23 +48,27 @@ class InfoResource:
                     free
                     used
                 }
+                system {
+                    manufacturer
+                    model
+                }
             }
         }
         """
-        
+
         result = self.client.execute_query(query)
-        
+
         if "info" not in result:
             raise APIError("Invalid response format: missing info field")
-        
+
         return result["info"]
-    
+
     def reboot(self) -> Dict[str, Any]:
         """Reboot the Unraid server.
-        
+
         Returns:
             The mutation response
-            
+
         Raises:
             Various exceptions from execute_query
         """
@@ -76,21 +80,21 @@ class InfoResource:
             }
         }
         """
-        
+
         result = self.client.execute_query(mutation)
-        
+
         if not result.get("reboot", {}).get("success", False):
             message = result.get("reboot", {}).get("message", "Unknown error")
             raise OperationError(f"Failed to reboot: {message}")
-        
+
         return result["reboot"]
-    
+
     def shutdown(self) -> Dict[str, Any]:
         """Shutdown the Unraid server.
-        
+
         Returns:
             The mutation response
-            
+
         Raises:
             Various exceptions from execute_query
         """
@@ -102,21 +106,45 @@ class InfoResource:
             }
         }
         """
-        
+
         result = self.client.execute_query(mutation)
-        
+
         if not result.get("shutdown", {}).get("success", False):
             message = result.get("shutdown", {}).get("message", "Unknown error")
             raise OperationError(f"Failed to shutdown: {message}")
-        
+
         return result["shutdown"]
-    
+
+    def get_spindown_delay(self) -> str:
+        """Get the spindown delay setting.
+
+        Returns:
+            The spindown delay in minutes
+
+        Raises:
+            Various exceptions from execute_query
+        """
+        query = """
+        query GetSpindownDelay {
+            vars {
+                spindownDelay
+            }
+        }
+        """
+
+        result = self.client.execute_query(query)
+
+        if "vars" not in result or "spindownDelay" not in result["vars"]:
+            raise APIError("Invalid response format: missing vars.spindownDelay field")
+
+        return result["vars"]["spindownDelay"]
+
     def get_docker_info(self) -> Dict[str, Any]:
         """Get Docker information.
-        
+
         Returns:
             Docker information
-            
+
         Raises:
             Various exceptions from execute_query
         """
@@ -137,20 +165,20 @@ class InfoResource:
             }
         }
         """
-        
+
         result = self.client.execute_query(query)
-        
+
         if "dockerInfo" not in result:
             raise APIError("Invalid response format: missing dockerInfo field")
-        
+
         return result["dockerInfo"]
-    
+
     def get_vm_info(self) -> Dict[str, Any]:
         """Get VM information.
-        
+
         Returns:
             VM information
-            
+
         Raises:
             Various exceptions from execute_query
         """
@@ -172,32 +200,32 @@ class InfoResource:
             }
         }
         """
-        
+
         result = self.client.execute_query(query)
-        
+
         if "vmInfo" not in result:
             raise APIError("Invalid response format: missing vmInfo field")
-        
+
         return result["vmInfo"]
 
 
 class AsyncInfoResource:
     """Async system information resource for the Unraid GraphQL API."""
-    
+
     def __init__(self, client):
         """Initialize the info resource.
-        
+
         Args:
             client: The Unraid client
         """
         self.client = client
-    
+
     async def get_system_info(self) -> Dict[str, Any]:
         """Get system information.
-        
+
         Returns:
             System information
-            
+
         Raises:
             Various exceptions from execute_query
         """
@@ -222,23 +250,27 @@ class AsyncInfoResource:
                     free
                     used
                 }
+                system {
+                    manufacturer
+                    model
+                }
             }
         }
         """
-        
+
         result = await self.client.execute_query(query)
-        
+
         if "info" not in result:
             raise APIError("Invalid response format: missing info field")
-        
+
         return result["info"]
-    
+
     async def reboot(self) -> Dict[str, Any]:
         """Reboot the Unraid server.
-        
+
         Returns:
             The mutation response
-            
+
         Raises:
             Various exceptions from execute_query
         """
@@ -250,21 +282,21 @@ class AsyncInfoResource:
             }
         }
         """
-        
+
         result = await self.client.execute_query(mutation)
-        
+
         if not result.get("reboot", {}).get("success", False):
             message = result.get("reboot", {}).get("message", "Unknown error")
             raise OperationError(f"Failed to reboot: {message}")
-        
+
         return result["reboot"]
-    
+
     async def shutdown(self) -> Dict[str, Any]:
         """Shutdown the Unraid server.
-        
+
         Returns:
             The mutation response
-            
+
         Raises:
             Various exceptions from execute_query
         """
@@ -276,21 +308,45 @@ class AsyncInfoResource:
             }
         }
         """
-        
+
         result = await self.client.execute_query(mutation)
-        
+
         if not result.get("shutdown", {}).get("success", False):
             message = result.get("shutdown", {}).get("message", "Unknown error")
             raise OperationError(f"Failed to shutdown: {message}")
-        
+
         return result["shutdown"]
-    
+
+    async def get_spindown_delay(self) -> str:
+        """Get the spindown delay setting.
+
+        Returns:
+            The spindown delay in minutes
+
+        Raises:
+            Various exceptions from execute_query
+        """
+        query = """
+        query GetSpindownDelay {
+            vars {
+                spindownDelay
+            }
+        }
+        """
+
+        result = await self.client.execute_query(query)
+
+        if "vars" not in result or "spindownDelay" not in result["vars"]:
+            raise APIError("Invalid response format: missing vars.spindownDelay field")
+
+        return result["vars"]["spindownDelay"]
+
     async def get_docker_info(self) -> Dict[str, Any]:
         """Get Docker information.
-        
+
         Returns:
             Docker information
-            
+
         Raises:
             Various exceptions from execute_query
         """
@@ -311,20 +367,20 @@ class AsyncInfoResource:
             }
         }
         """
-        
+
         result = await self.client.execute_query(query)
-        
+
         if "dockerInfo" not in result:
             raise APIError("Invalid response format: missing dockerInfo field")
-        
+
         return result["dockerInfo"]
-    
+
     async def get_vm_info(self) -> Dict[str, Any]:
         """Get VM information.
-        
+
         Returns:
             VM information
-            
+
         Raises:
             Various exceptions from execute_query
         """
@@ -346,10 +402,10 @@ class AsyncInfoResource:
             }
         }
         """
-        
+
         result = await self.client.execute_query(query)
-        
+
         if "vmInfo" not in result:
             raise APIError("Invalid response format: missing vmInfo field")
-        
+
         return result["vmInfo"]

@@ -6,28 +6,41 @@ from pydantic import BaseModel, Field
 
 class CPUSetpoint(BaseModel):
     """Model for a CPU setpoint."""
-    
+
     label: str = Field(..., description="The name of the setpoint")
     value: str = Field(..., description="The value of the setpoint")
 
 
+class System(BaseModel):
+    """Model for system hardware information."""
+
+    manufacturer: str = Field(..., description="The system manufacturer")
+    model: str = Field(..., description="The system model")
+    temperature: Optional[float] = Field(None, description="The motherboard temperature in celsius")
+
+    class Config:
+        """Pydantic config."""
+
+        populate_by_name = True
+
+
 class CPU(BaseModel):
     """Model for CPU information."""
-    
+
     frequency: float = Field(..., description="The CPU frequency in MHz")
     model: str = Field(..., description="The CPU model name")
     load_avg: float = Field(..., alias="loadAvg", description="The CPU load average")
     temperature: Optional[float] = Field(None, description="The CPU temperature in celsius")
-    
+
     class Config:
         """Pydantic config."""
-        
+
         populate_by_name = True
 
 
 class SystemInfo(BaseModel):
     """Model for system information."""
-    
+
     name: str = Field(..., description="The system name")
     description: Optional[str] = Field(None, description="The system description")
     version: str = Field(..., description="The Unraid version")
@@ -54,16 +67,17 @@ class SystemInfo(BaseModel):
     memory: int = Field(..., description="Total memory in bytes")
     load_avg: float = Field(..., alias="loadAvg", description="System load average")
     cpu: CPU = Field(..., description="CPU information")
-    
+    system: Optional[System] = Field(None, description="System hardware information")
+
     class Config:
         """Pydantic config."""
-        
+
         populate_by_name = True
 
 
 class DockerInfo(BaseModel):
     """Model for Docker information."""
-    
+
     enabled: bool = Field(..., description="Whether Docker is enabled")
     version: str = Field(..., description="Docker version")
     status: str = Field(..., description="Docker status")
@@ -75,16 +89,16 @@ class DockerInfo(BaseModel):
     custom_networks: List[str] = Field(..., alias="customNetworks", description="Custom Docker networks")
     privileged: bool = Field(..., description="Whether privileged mode is enabled")
     log_rotation: bool = Field(..., alias="logRotation", description="Whether log rotation is enabled")
-    
+
     class Config:
         """Pydantic config."""
-        
+
         populate_by_name = True
 
 
 class VMInfo(BaseModel):
     """Model for VM information."""
-    
+
     enabled: bool = Field(..., description="Whether VM support is enabled")
     version: str = Field(..., description="VM version")
     status: str = Field(..., description="VM status")
@@ -97,8 +111,8 @@ class VMInfo(BaseModel):
     other_vm_count: int = Field(..., alias="otherVmCount", description="Number of other VMs")
     cpu_isolated_cores: List[int] = Field(..., alias="CPUisolatedCores", description="CPU isolated cores")
     pcie_iommu_groups: List[int] = Field(..., alias="PCIeiommuGroups", description="PCIe IOMMU groups")
-    
+
     class Config:
         """Pydantic config."""
-        
+
         populate_by_name = True
