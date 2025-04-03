@@ -22,7 +22,7 @@ The root `Query` type provides access to all the data you can retrieve from your
 
 ### System Monitoring Queries
 
-Based on your screenshots, the API provides access to detailed monitoring data including:
+The API provides access to detailed monitoring data including:
 
 ### System Information
 
@@ -92,26 +92,12 @@ The `Mutation` type defines operations that modify data on the server. Here are 
 - `unmountArrayDisk(id: ID!)`: Unmount a disk
 - `clearArrayDiskStatistics(id: ID!)`: Clear disk statistics
 
-From your screenshots, array operations include:
-- Starting/stopping the array
-- Array status information (e.g., "Started", "Parity is valid")
-- Spin up/down control for disks
-- Moving disks between slots
-
 ### Parity Operations
 
 - `startParityCheck(correct: Boolean)`: Start a parity check
 - `pauseParityCheck`: Pause the parity check
 - `resumeParityCheck`: Resume the parity check
 - `cancelParityCheck`: Cancel the parity check
-
-From your screenshots, parity information includes:
-- Parity check history (last check date, duration, speed)
-- Check completion status (e.g., "Last check completed on Tue 14 Jan 2025 09:54 AM (79 days ago)")
-- Check duration (e.g., "19 hours, 5 minutes, 18 seconds")
-- Average speed (e.g., "145.5 MB/s") 
-- Error count (e.g., "Finding 0 errors")
-- Next scheduled check information
 
 ### System Operations
 
@@ -200,13 +186,6 @@ The `Array` type represents the Unraid disk array:
 - `disks`: Data disks in the current array
 - `caches`: Caches in the current array
 
-Based on your screenshots, the Array information includes:
-- Total array capacity (e.g., "24 TB")
-- Used space (e.g., "7.13 TB used of 24 TB")
-- Percentage used (e.g., "29.7%")
-- Disk status (standby, active)
-- Disk utilization percentages
-
 ### ArrayDisk
 
 Represents a disk in the array:
@@ -233,19 +212,6 @@ Represents a disk in the array:
 - `format`: File format information
 - `transport`: Disk transport type (ata, nvme, usb, etc.)
 
-From your screenshots, additional disk information accessible includes:
-- Detailed disk model information (e.g., "Seagate IronWolf ST8000VN004-2M2101")
-- Serial number (e.g., "WKD06CQ1")
-- Firmware version (e.g., "SC60")
-- SMART capability and status
-- Manufacturing date
-- Warranty period
-- Rotation rate (e.g., "7200 rpm")
-- Form factor (e.g., "3.5 inches")
-- SATA/ATA version
-- User capacity in bytes
-- Sector sizes
-
 ### DockerContainer
 
 Represents a Docker container:
@@ -266,11 +232,6 @@ Represents a Docker container:
 - `mounts`: Container mounts
 - `autoStart`: Whether the container starts automatically
 
-From your screenshots, the dashboard shows Docker containers with:
-- Container name (e.g., "homeassistant", "plex", "radarr")
-- Current state ("started")
-- Icons representing each container
-
 ### Network
 
 Represents network information:
@@ -289,13 +250,6 @@ Represents network information:
 - `speed`: Network speed
 - `carrierChanges`: Carrier changes count
 - `accessUrls`: Access URLs
-
-From your screenshots, network information includes:
-- Interface name (e.g., "eth0")
-- Mode of operation (e.g., "1000 Mbps, full duplex, mtu 1500")
-- Inbound bandwidth (e.g., "31.6 Kbps")
-- Outbound bandwidth (e.g., "53.0 Kbps")
-- Interface status (up/down)
 
 ### User/Me
 
@@ -342,17 +296,6 @@ Provides detailed system information:
 - `time`: Current system time
 - `versions`: Software versions (including Unraid, kernel, Docker, etc.)
 
-From your screenshots, system information displayed includes:
-- CPU temperature (e.g., "38°C")
-- CPU model (Intel Core i7-8700K @ 3.70GHz)
-- Overall CPU load and per-core usage
-- Motherboard temperature (e.g., "40°C")
-- Motherboard model (ASRock Z390M-ITX/ac)
-- BIOS version and date
-- Memory usage (32 GB DDR4 with usage breakdown)
-- System uptime (33 days, 2 hours, 11 minutes)
-- Fan speeds (e.g., "805 RPM", "821 RPM", "1481 RPM")
-
 ### Vars
 
 Contains system variables and settings:
@@ -376,6 +319,7 @@ The API uses API keys for authentication and role-based permissions for authoriz
 ### Roles
 
 Available roles:
+
 - `admin`: Administrative privileges
 - `connect`: Connect privileges
 - `guest`: Limited guest privileges
@@ -383,6 +327,7 @@ Available roles:
 ### Permissions
 
 Permissions control access to specific resources:
+
 - `resource`: The resource type (array, docker, network, etc.)
 - `actions`: Allowed actions on the resource
 
@@ -991,6 +936,7 @@ The Unraid GraphQL API supports various filesystem types and provides operations
 ### Supported Filesystem Types
 
 The schema defines an enum `DiskFsType` with these supported filesystems:
+
 - `xfs`: XFS filesystem
 - `btrfs`: BTRFS filesystem
 - `vfat`: VFAT filesystem
