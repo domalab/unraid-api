@@ -147,11 +147,23 @@ await client.info.shutdown()
 ```
 
 ### Disk Operations
+
 ```python
-# Get disk information
+# Get disk information (includes temperature and SMART status)
 disks = await client.disk.get_disks()
 
-# Get specific disk (includes spindown status)
+# Display disk temperature
+for disk in disks:
+    temp = disk.get("temperature")
+    if temp is not None and temp > 0:
+        print(f"Disk {disk['name']} temperature: {temp}°C")
+
+    # Display SMART status
+    smart_status = disk.get("smartStatus")
+    if smart_status:
+        print(f"Disk {disk['name']} SMART status: {smart_status}")
+
+# Get specific disk with detailed information
 disk = await client.disk.get_disk("disk_id")
 
 # Check filesystem type
@@ -172,6 +184,10 @@ if smart_data.get("status") == "PASSED":
 # Access SMART attributes
 for attribute in smart_data.get("attributes", []):
     print(f"Attribute {attribute['id']}: {attribute['name']} = {attribute['value']}")
+
+# Get spindown delay setting
+spindown_delay = await client.info.get_spindown_delay()
+print(f"Disk spindown delay: {spindown_delay} minutes")
 
 # Mount disk
 await client.disk.mount_disk("disk_id")
@@ -228,9 +244,183 @@ except RateLimitError:
     pass
 ```
 
+### Exception Details
+
+1. **AuthenticationError**: Raised when there's an issue with authentication, such as an invalid API key.
+   ```python
+   try:
+       await client.array.get_array_status()
+   except AuthenticationError as e:
+       print(f"Authentication failed: {e}")
+       # Prompt user to check their API key
+   ```
+
+2. **ConnectionError**: Raised when the client can't connect to the Unraid server.
+   ```python
+   try:
+       await client.disk.get_disks()
+   except ConnectionError as e:
+       print(f"Connection failed: {e}")
+       # Check if the Unraid server is online and reachable
+   ```
+
+3. **APIError**: Raised when the API returns an error response.
+   ```python
+   try:
+       await client.vm.start_vm("non_existent_vm")
+   except APIError as e:
+       print(f"API error: {e}")
+       # Handle specific API errors based on the error message
+   ```
+
+4. **ValidationError**: Raised when input validation fails.
+   ```python
+   try:
+       await client.disk.mount_disk("")
+   except ValidationError as e:
+       print(f"Validation error: {e}")
+       # Fix the invalid input
+   ```
+
+5. **OperationError**: Raised when an operation fails.
+   ```python
+   try:
+       await client.array.stop_array()
+   except OperationError as e:
+       print(f"Operation failed: {e}")
+       # Handle the specific operation failure
+   ```
+
+6. **RateLimitError**: Raised when the API rate limit is exceeded.
+   ```python
+   try:
+       # Making too many requests in a short time
+       for _ in range(100):
+           await client.array.get_array_status()
+   except RateLimitError as e:
+       print(f"Rate limit exceeded: {e}")
+       # Implement backoff strategy or reduce request frequency
+   ```
+
 ## Home Assistant Integration Examples
 
 ### Basic Integration Setup
+
+```python
+from homeassistant.config_entries import ConfigEntry
+from homeassistant.core import HomeAssistant
+from unraid_api import UnraidClient
+
+async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
+    """Set up Unraid from a config entry."""
+    host = entry.data["host"]
+    api_key = entry.data["api_key"]
+
+    client = UnraidClient(host=host, api_key=api_key)
+
+    # Test the connection
+    try:
+        system_info = await client.info.get_system_info()
+        hass.data[DOMAIN][entry.entry_id] = client
+        return True
+    except Exception as e:
+        return False
+```
+
+### Creating Sensors for Disk Temperature
+
+```python
+from homeassistant.components.sensor import SensorEntity
+from homeassistant.config_entries import ConfigEntry
+from homeassistant.core import HomeAssistant
+from homeassistant.helpers.entity_platform import AddEntitiesCallback
+
+async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry, async_add_entities: AddEntitiesCallback) -> None:
+    """Set up Unraid disk temperature sensors."""
+    client = hass.data[DOMAIN][entry.entry_id]
+
+    try:
+        disks = await client.disk.get_disks()
+        sensors = []
+
+        for disk in disks:
+            if disk.get("temperature") is not None:
+                sensors.append(UnraidDiskTemperatureSensor(client, disk))
+
+        async_add_entities(sensors, True)
+    except Exception as e:
+        # Handle error
+        pass
+
+class UnraidDiskTemperatureSensor(SensorEntity):
+    """Sensor for Unraid disk temperature."""
+
+    def __init__(self, client, disk):
+        """Initialize the sensor."""
+        self._client = client
+        self._disk = disk
+        self._attr_name = f"Unraid {disk['name']} Temperature"
+        self._attr_unique_id = f"unraid_disk_{disk['id']}_temperature"
+        self._attr_native_unit_of_measurement = "°C"
+        self._attr_device_class = "temperature"
+        self._attr_state_class = "measurement"
+
+    async def async_update(self):
+        """Update the sensor."""
+        try:
+            disk = await self._client.disk.get_disk(self._disk["id"])
+            self._attr_native_value = disk.get("temperature")
+        except Exception as e:
+            # Handle error
+            pass
+```
+
+### Creating Binary Sensors for Disk SMART Status
+
+```python
+from homeassistant.components.binary_sensor import BinarySensorEntity
+from homeassistant.config_entries import ConfigEntry
+from homeassistant.core import HomeAssistant
+from homeassistant.helpers.entity_platform import AddEntitiesCallback
+
+async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry, async_add_entities: AddEntitiesCallback) -> None:
+    """Set up Unraid disk SMART status sensors."""
+    client = hass.data[DOMAIN][entry.entry_id]
+
+    try:
+        disks = await client.disk.get_disks()
+        sensors = []
+
+        for disk in disks:
+            if disk.get("smartStatus") is not None:
+                sensors.append(UnraidDiskSmartSensor(client, disk))
+
+        async_add_entities(sensors, True)
+    except Exception as e:
+        # Handle error
+        pass
+
+class UnraidDiskSmartSensor(BinarySensorEntity):
+    """Binary sensor for Unraid disk SMART status."""
+
+    def __init__(self, client, disk):
+        """Initialize the sensor."""
+        self._client = client
+        self._disk = disk
+        self._attr_name = f"Unraid {disk['name']} SMART Status"
+        self._attr_unique_id = f"unraid_disk_{disk['id']}_smart"
+        self._attr_device_class = "problem"
+
+    async def async_update(self):
+        """Update the sensor."""
+        try:
+            disk = await self._client.disk.get_disk(self._disk["id"])
+            # True means there's a problem (SMART status is not PASSED)
+            self._attr_is_on = disk.get("smartStatus") != "PASSED"
+        except Exception as e:
+            # Handle error
+            pass
+```
 
 ```python
 from homeassistant.core import HomeAssistant

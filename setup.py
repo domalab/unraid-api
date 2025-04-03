@@ -7,7 +7,7 @@ with open("README.md", encoding="utf-8") as f:
 
 setup(
     name="unraid-api",
-    version="0.1.3",
+    version="1.0.0",
     description="Python library for controlling and monitoring Unraid servers via GraphQL API",
     long_description=long_description,
     long_description_content_type="text/markdown",
@@ -16,7 +16,7 @@ setup(
     url="https://github.com/domalab/unraid-api",
     packages=find_packages(),
     classifiers=[
-        "Development Status :: 3 - Alpha",
+        "Development Status :: 5 - Production/Stable",
         "Intended Audience :: Developers",
         "License :: OSI Approved :: MIT License",
         "Programming Language :: Python :: 3",
@@ -54,4 +54,4 @@ setup(
         "Source": "https://github.com/domalab/unraid-api",
         "Bug Tracker": "https://github.com/domalab/unraid-api/issues",
     },
-) 
+)
