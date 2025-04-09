@@ -1,0 +1,137 @@
+---
+---
+
+@import "{{ site.theme }}";
+
+// Custom styles
+.grid-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  grid-gap: 20px;
+  margin-top: 2rem;
+}
+
+.grid-item {
+  background-color: #f5f6fa;
+  border-radius: 5px;
+  padding: 20px;
+  transition: all 0.3s ease;
+  
+  &:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+  }
+  
+  a {
+    text-decoration: none;
+    color: inherit;
+    
+    h3 {
+      margin-top: 0;
+      color: #5c5962;
+    }
+    
+    p {
+      color: #959396;
+      margin-bottom: 0;
+    }
+  }
+}
+
+.code-example {
+  border-radius: 5px;
+  margin-bottom: 1.5rem;
+}
+
+.highlight {
+  border-radius: 0 0 5px 5px;
+}
+
+.warning {
+  background-color: #fff3cd;
+  border-left: 4px solid #ffc107;
+  padding: 0.75rem 1rem;
+  margin-bottom: 1rem;
+  border-radius: 0 5px 5px 0;
+}
+
+.note {
+  background-color: #d1ecf1;
+  border-left: 4px solid #17a2b8;
+  padding: 0.75rem 1rem;
+  margin-bottom: 1rem;
+  border-radius: 0 5px 5px 0;
+}
+
+.tip {
+  background-color: #d4edda;
+  border-left: 4px solid #28a745;
+  padding: 0.75rem 1rem;
+  margin-bottom: 1rem;
+  border-radius: 0 5px 5px 0;
+}
+
+// Table styles
+table {
+  display: table;
+  width: 100%;
+  margin-bottom: 1.5rem;
+  border-collapse: collapse;
+  
+  th, td {
+    padding: 0.75rem;
+    vertical-align: top;
+    border-top: 1px solid #dee2e6;
+  }
+  
+  thead th {
+    vertical-align: bottom;
+    border-bottom: 2px solid #dee2e6;
+    background-color: #f8f9fa;
+  }
+  
+  tbody + tbody {
+    border-top: 2px solid #dee2e6;
+  }
+}
+
+// API method styling
+.api-method {
+  margin-bottom: 2rem;
+  
+  h3 {
+    margin-top: 0;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid #eaecef;
+  }
+  
+  .method-signature {
+    font-family: monospace;
+    background-color: #f6f8fa;
+    padding: 1rem;
+    border-radius: 5px;
+    margin-bottom: 1rem;
+  }
+  
+  .parameters {
+    h4 {
+      margin-top: 1rem;
+      margin-bottom: 0.5rem;
+    }
+  }
+  
+  .returns {
+    margin-top: 1rem;
+  }
+  
+  .example {
+    margin-top: 1rem;
+  }
+}
+
+// Responsive adjustments
+@media (max-width: 800px) {
+  .grid-container {
+    grid-template-columns: 1fr;
+  }
+}
