@@ -1,0 +1,51 @@
+{% assign method_type = include.type | default: "get" %}
+<div class="api-method">
+  <div class="api-method-header">
+    <h3 class="api-method-title">{{ include.title }}</h3>
+    <span class="api-method-type api-method-type-{{ method_type | downcase }}">{{ method_type }}</span>
+  </div>
+  <div class="api-method-body">
+    <div class="api-method-description">
+      {{ include.description | markdownify }}
+    </div>
+    
+    {% if include.parameters %}
+    <div class="api-method-section">
+      <h4 class="api-method-section-title">Parameters</h4>
+      <div class="api-method-parameters">
+        {% for param in include.parameters %}
+        <div class="api-method-parameter">
+          <span class="parameter-name">{{ param.name }}</span>
+          <span class="parameter-type">{{ param.type }}</span>
+          {% if param.required %}
+          <span class="parameter-required">Required</span>
+          {% endif %}
+          <div class="parameter-description">{{ param.description | markdownify }}</div>
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+    {% endif %}
+    
+    {% if include.example %}
+    <div class="api-method-section">
+      <h4 class="api-method-section-title">Example</h4>
+      <div class="api-method-example">
+        <pre><code class="language-python">{{ include.example }}</code></pre>
+      </div>
+    </div>
+    {% endif %}
+    
+    {% if include.response %}
+    <div class="api-method-section">
+      <h4 class="api-method-section-title">Response</h4>
+      <div class="api-method-response">
+        <span class="api-method-response-code response-code-{{ include.response_code | default: '200' }}">{{ include.response_code | default: '200' }}</span>
+        <div class="api-method-example">
+          <pre><code class="language-json">{{ include.response }}</code></pre>
+        </div>
+      </div>
+    </div>
+    {% endif %}
+  </div>
+</div>

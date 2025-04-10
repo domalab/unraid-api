@@ -1,0 +1,342 @@
+/* Custom styles for Unraid API Documentation */
+
+/* Table of Contents */
+.toc-container {
+  background-color: var(--code-background);
+  border-radius: 4px;
+  padding: 1rem 1.5rem;
+  margin: 1.5rem 0;
+  border-left: 3px solid var(--primary-color);
+}
+
+.toc-title {
+  margin-top: 0;
+  margin-bottom: 0.75rem;
+  font-size: 1.1rem;
+  color: var(--primary-color);
+}
+
+.toc-container ul {
+  margin-bottom: 0;
+  padding-left: 1.5rem;
+}
+
+.toc-container li {
+  margin-bottom: 0.25rem;
+}
+
+.toc-container a {
+  text-decoration: none;
+  color: var(--secondary-color);
+}
+
+.toc-container a:hover {
+  color: var(--primary-color);
+  text-decoration: underline;
+}
+
+/* General styling */
+:root {
+  --primary-color: #0366d6;
+  --secondary-color: #5c5962;
+  --background-color: #ffffff;
+  --code-background: #f5f6fa;
+  --border-color: #e6e8eb;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  line-height: 1.6;
+  color: var(--secondary-color);
+  background-color: var(--background-color);
+}
+
+a {
+  color: var(--primary-color);
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+/* Header styling */
+.header-wrapper {
+  margin-bottom: 2rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.page-header {
+  margin-top: 1.5rem;
+}
+
+.page-title {
+  margin-top: 0;
+  margin-bottom: 0.5rem;
+}
+
+.page-description {
+  font-size: 1.1rem;
+  color: #6c757d;
+  margin-top: 0;
+}
+
+/* Footer styling */
+.footer-wrapper {
+  margin-top: 4rem;
+  padding-top: 2rem;
+  border-top: 1px solid var(--border-color);
+}
+
+.footer-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.footer-links {
+  margin-bottom: 1rem;
+}
+
+.footer-links a {
+  margin: 0 0.5rem;
+}
+
+.footer-copyright {
+  font-size: 0.9rem;
+  color: #6c757d;
+}
+
+.footer-copyright p {
+  margin: 0.25rem 0;
+}
+
+/* Ad styling */
+.header-ad, .footer-ad, .sidebar-ad, .inline-ad {
+  margin: 1rem 0;
+  text-align: center;
+  min-height: 90px;
+  overflow: hidden;
+}
+
+.sidebar-ad {
+  margin: 2rem 0;
+  padding: 1rem;
+  background-color: var(--code-background);
+  border-radius: 4px;
+}
+
+.inline-ad {
+  margin: 2.5rem 0;
+  padding: 1.5rem 0;
+  border-top: 1px solid var(--border-color);
+  border-bottom: 1px solid var(--border-color);
+}
+
+/* Responsive ad behavior */
+@media (max-width: 576px) {
+  .header-ad, .footer-ad {
+    display: block;
+  }
+  .sidebar-ad {
+    display: none;
+  }
+}
+
+@media (min-width: 577px) and (max-width: 992px) {
+  .header-ad, .footer-ad, .inline-ad {
+    display: block;
+  }
+  .sidebar-ad {
+    display: block;
+  }
+}
+
+@media (min-width: 993px) {
+  .header-ad, .footer-ad, .sidebar-ad, .inline-ad {
+    display: block;
+  }
+}
+
+/* Code blocks */
+pre {
+  background-color: var(--code-background);
+  border-radius: 4px;
+  padding: 1rem;
+  overflow-x: auto;
+}
+
+code {
+  background-color: var(--code-background);
+  border-radius: 3px;
+  padding: 0.2em 0.4em;
+  font-family: SFMono-Regular, Consolas, "Liberation Mono", Menlo, monospace;
+}
+
+/* API method styling */
+.api-method {
+  border: 1px solid var(--border-color);
+  border-radius: 4px;
+  margin-bottom: 2rem;
+  overflow: hidden;
+}
+
+.api-method-header {
+  background-color: var(--code-background);
+  padding: 1rem;
+  border-bottom: 1px solid var(--border-color);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.api-method-title {
+  margin: 0;
+  font-size: 1.25rem;
+}
+
+.api-method-type {
+  display: inline-block;
+  padding: 0.25rem 0.75rem;
+  border-radius: 3px;
+  font-size: 0.8rem;
+  font-weight: bold;
+  text-transform: uppercase;
+}
+
+.api-method-type-get {
+  background-color: #61affe;
+  color: white;
+}
+
+.api-method-type-post {
+  background-color: #49cc90;
+  color: white;
+}
+
+.api-method-type-put {
+  background-color: #fca130;
+  color: white;
+}
+
+.api-method-type-delete {
+  background-color: #f93e3e;
+  color: white;
+}
+
+.api-method-body {
+  padding: 1rem;
+}
+
+.api-method-description {
+  margin-bottom: 1.5rem;
+  line-height: 1.6;
+}
+
+.api-method-section {
+  margin-bottom: 1.5rem;
+}
+
+.api-method-section-title {
+  font-size: 1.1rem;
+  margin-bottom: 0.75rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.api-method-parameters {
+  margin-bottom: 1rem;
+}
+
+.api-method-parameter {
+  margin-bottom: 1rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px dashed var(--border-color);
+}
+
+.api-method-parameter:last-child {
+  border-bottom: none;
+  padding-bottom: 0;
+}
+
+.parameter-name {
+  font-weight: bold;
+  display: inline-block;
+  margin-right: 0.5rem;
+}
+
+.parameter-type {
+  color: #6c757d;
+  font-size: 0.9rem;
+  display: inline-block;
+  padding: 0.1rem 0.5rem;
+  background-color: #f0f0f0;
+  border-radius: 3px;
+}
+
+.parameter-required {
+  color: #e91e63;
+  font-size: 0.8rem;
+  margin-left: 0.5rem;
+}
+
+.parameter-description {
+  margin-top: 0.5rem;
+  color: var(--secondary-color);
+}
+
+.api-method-example {
+  background-color: #272b33;
+  color: #fff;
+  border-radius: 4px;
+  padding: 1rem;
+  overflow-x: auto;
+}
+
+.api-method-example pre {
+  margin: 0;
+  background-color: transparent;
+  color: inherit;
+}
+
+.api-method-response {
+  margin-top: 1.5rem;
+}
+
+.api-method-response-code {
+  display: inline-block;
+  padding: 0.25rem 0.75rem;
+  border-radius: 3px;
+  font-size: 0.9rem;
+  font-weight: bold;
+  margin-right: 0.5rem;
+}
+
+.response-code-200 {
+  background-color: #49cc90;
+  color: white;
+}
+
+.response-code-400, .response-code-404 {
+  background-color: #fca130;
+  color: white;
+}
+
+.response-code-500 {
+  background-color: #f93e3e;
+  color: white;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .footer-content {
+    flex-direction: column;
+  }
+
+  .footer-links, .footer-copyright {
+    text-align: center;
+    margin-bottom: 1rem;
+  }
+}

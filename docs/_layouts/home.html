@@ -1,0 +1,45 @@
+---
+layout: default
+---
+
+<div class="home-content">
+  {{ content }}
+</div>
+
+<style>
+  .grid-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 20px;
+    margin-top: 30px;
+    margin-bottom: 30px;
+  }
+  
+  .grid-item {
+    background-color: #f5f6fa;
+    border-radius: 8px;
+    padding: 20px;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+  }
+  
+  .grid-item:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+  }
+  
+  .grid-item a {
+    text-decoration: none;
+    color: inherit;
+  }
+  
+  .grid-item h3 {
+    margin-top: 0;
+    color: #5c5962;
+  }
+  
+  .grid-item p {
+    margin-bottom: 0;
+    color: #959396;
+  }
+</style>

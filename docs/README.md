@@ -2,25 +2,25 @@
 
 This directory contains the documentation for the Unraid API Python library. The documentation is built using Jekyll and the Just the Docs theme, and is deployed to Cloudflare Pages.
 
-## Local Development
-
-To run the documentation locally:
-
-1. Install Ruby and Bundler
-2. Install dependencies:
-   ```bash
-   cd docs
-   bundle install
-   ```
-3. Start the local server:
-   ```bash
-   bundle exec jekyll serve
-   ```
-4. Open your browser to http://localhost:4000
-
 ## Deployment
 
 The documentation is automatically deployed to Cloudflare Pages when changes are pushed to the main branch.
+
+### Cloudflare Pages Setup
+
+1. Log in to the [Cloudflare dashboard](https://dash.cloudflare.com/) and select your account.
+2. In Account Home, select **Workers & Pages** > **Create**.
+3. Select the **Pages** tab.
+4. Select **Connect to Git**.
+5. Select your GitHub repository and then select **Begin setup**.
+6. In the **Build settings** section, configure the following:
+   - Production branch: `main`
+   - Build command: `cd docs && bundle install && bundle exec jekyll build`
+   - Build output directory: `docs/_site`
+   - Environment variables:
+     - `RUBY_VERSION`: `3.3.0`
+     - `JEKYLL_ENV`: `production`
+7. Click **Save and Deploy**.
 
 ### Manual Deployment
 
@@ -58,7 +58,16 @@ The documentation is organized as follows:
   - `css/`: Custom CSS
   - `js/`: Custom JavaScript
   - `images/`: Images
+- `_layouts/`: Layout templates
+  - `default.html`: Default layout template
+  - `home.html`: Home page layout template
+- `_includes/`: Reusable components
+  - `head.html`: HTML head content
+  - `header.html`: Page header
+  - `footer.html`: Page footer
+  - `nav.html`: Navigation menu
 - `_config.yml`: Jekyll configuration
 - `_headers`: HTTP headers for Cloudflare Pages
 - `_redirects`: URL redirects for Cloudflare Pages
 - `Gemfile`: Ruby dependencies
+- `build.sh`: Build script for Cloudflare Pages
