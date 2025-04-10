@@ -159,6 +159,7 @@ Here are some common error scenarios and how to handle them:
 ### Authentication Errors
 
 If you encounter an `AuthenticationError`, check that:
+
 - The API key is correct
 - The API key has the necessary permissions
 - The API key has not been revoked
@@ -166,6 +167,7 @@ If you encounter an `AuthenticationError`, check that:
 ### Connection Errors
 
 If you encounter a `ConnectionError`, check that:
+
 - The Unraid server is running
 - The server is reachable from your network
 - The GraphQL API is enabled on the server
@@ -174,6 +176,7 @@ If you encounter a `ConnectionError`, check that:
 ### GraphQL Errors
 
 If you encounter a `GraphQLError`, check that:
+
 - The query or mutation is valid
 - The variables are correct
 - The requested fields exist in the schema
@@ -181,6 +184,7 @@ If you encounter a `GraphQLError`, check that:
 ### Operation Errors
 
 If you encounter an `OperationError`, check the error message for details about what went wrong. Common issues include:
+
 - Trying to start an array that's already started
 - Trying to stop an array that's already stopped
 - Trying to start a VM that's already running
