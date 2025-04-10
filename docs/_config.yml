@@ -3,8 +3,14 @@ description: Documentation for the Unraid API Python library
 baseurl: "" # the subpath of your site, e.g. /blog
 url: "" # the base hostname & protocol for your site, e.g. http://example.com
 
+# Build settings
+markdown: kramdown
+plugins:
+  - jekyll-feed
+  - jekyll-seo-tag
+
 # Theme settings
-remote_theme: pmarsceill/just-the-docs
+remote_theme: just-the-docs/just-the-docs
 color_scheme: light
 
 # Aux links for the upper right navigation
@@ -26,7 +32,7 @@ footer_content: "Copyright &copy; 2025 domalab. Distributed under an <a href=\"h
 heading_anchors: true
 
 # Google Analytics
-ga_tracking: 
+ga_tracking:
 ga_tracking_anonymize_ip: true
 
 # Enable or disable the site search
