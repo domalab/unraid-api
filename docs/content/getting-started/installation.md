@@ -38,7 +38,7 @@ You can also install the library directly from the source code:
 
 ```bash
 git clone https://github.com/domalab/unraid-api.git
-cd pyUNRAID
+cd unraid-api
 pip install -e .
 ```
 

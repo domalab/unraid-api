@@ -49,4 +49,4 @@ The Unraid API Python library is designed to make it easy to interact with Unrai
 
 ## License
 
-This project is licensed under the MIT License - see the [LICENSE](https://github.com/domalab/pyUNRAID/blob/main/LICENSE) file for details.
+This project is licensed under the MIT License - see the [LICENSE](https://github.com/domalab/unraid-api/blob/main/LICENSE) file for details.
