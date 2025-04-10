@@ -14,6 +14,7 @@ This section provides detailed documentation for the Unraid API library. It cove
 
 The Unraid API library is organized into resources, each representing a different aspect of the Unraid server:
 
+- [GraphQL API Reference](graphql-api) - Complete reference for the Unraid GraphQL API
 - [System Information](system-info) - Get information about the Unraid server
 - [Array Management](array) - Manage the Unraid array
 - [Disk Operations](disk) - Work with disks
