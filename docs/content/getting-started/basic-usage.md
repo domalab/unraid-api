@@ -169,6 +169,5 @@ client.vm.restart_vm("vm_uuid")
 Now that you understand the basic usage of the Unraid API library, you can:
 
 1. [Learn how to handle errors](error-handling)
-2. [Explore the API reference]({{ site.baseurl }}/content/api/overview)
-3. [Use the command-line interface]({{ site.baseurl }}/content/cli/overview)
-4. [Integrate with Home Assistant]({{ site.baseurl }}/content/home-assistant/overview)
+2. [Explore the API reference]({{ site.baseurl }}/content/api)
+3. [Use the command-line interface]({{ site.baseurl }}/content/cli)

@@ -38,26 +38,26 @@ from unraid_api.exceptions import (
 try:
     # Connect to Unraid server
     client = UnraidClient("192.168.1.10", api_key="your-api-key")
-    
+
     # Perform an operation
     system_info = client.info.get_system_info()
-    
+
 except AuthenticationError as e:
     print(f"Authentication failed: {e}")
     # Handle authentication error (e.g., prompt for a new API key)
-    
+
 except ConnectionError as e:
     print(f"Connection error: {e}")
     # Handle connection error (e.g., check network, server status)
-    
+
 except GraphQLError as e:
     print(f"GraphQL error: {e}")
     # Handle GraphQL error (e.g., invalid query)
-    
+
 except OperationError as e:
     print(f"Operation failed: {e}")
     # Handle operation error (e.g., array already started)
-    
+
 except APIError as e:
     print(f"API error: {e}")
     # Handle other API errors
@@ -112,22 +112,22 @@ async def main():
     try:
         # Connect to Unraid server
         client = AsyncUnraidClient("192.168.1.10", api_key="your-api-key")
-        
+
         # Perform an operation
         system_info = await client.info.get_system_info()
-        
+
     except AuthenticationError as e:
         print(f"Authentication failed: {e}")
-        
+
     except ConnectionError as e:
         print(f"Connection error: {e}")
-        
+
     except GraphQLError as e:
         print(f"GraphQL error: {e}")
-        
+
     except OperationError as e:
         print(f"Operation failed: {e}")
-        
+
     except APIError as e:
         print(f"API error: {e}")
 
@@ -190,6 +190,5 @@ If you encounter an `OperationError`, check the error message for details about 
 
 Now that you understand how to handle errors, you can:
 
-1. [Explore the API reference]({{ site.baseurl }}/content/api/overview)
-2. [Use the command-line interface]({{ site.baseurl }}/content/cli/overview)
-3. [Integrate with Home Assistant]({{ site.baseurl }}/content/home-assistant/overview)
+1. [Explore the API reference]({{ site.baseurl }}/content/api)
+2. [Use the command-line interface]({{ site.baseurl }}/content/cli)

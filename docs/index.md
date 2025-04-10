@@ -18,7 +18,6 @@ Welcome to the official documentation for the Unraid API Python library. This li
 - Built-in query caching
 - Real-time subscription support
 - Command-line interface tool
-- Home Assistant integration
 
 ## Quick Navigation
 
@@ -30,23 +29,18 @@ Welcome to the official documentation for the Unraid API Python library. This li
     </a>
   </div>
   <div class="grid-item">
-    <a href="{{ site.baseurl }}/content/api/overview">
+    <a href="{{ site.baseurl }}/content/api">
       <h3>API Reference</h3>
       <p>Detailed API documentation</p>
     </a>
   </div>
   <div class="grid-item">
-    <a href="{{ site.baseurl }}/content/cli/overview">
+    <a href="{{ site.baseurl }}/content/cli">
       <h3>Command Line Interface</h3>
       <p>Using the CLI tool</p>
     </a>
   </div>
-  <div class="grid-item">
-    <a href="{{ site.baseurl }}/content/home-assistant/overview">
-      <h3>Home Assistant</h3>
-      <p>Home Assistant integration</p>
-    </a>
-  </div>
+
 </div>
 
 ## About
