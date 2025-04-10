@@ -1,7 +1,7 @@
 ---
 ---
 
-@import "{{ site.theme }}";
+@import "just-the-docs";
 
 // Custom styles
 .grid-container {
@@ -16,21 +16,21 @@
   border-radius: 5px;
   padding: 20px;
   transition: all 0.3s ease;
-  
+
   &:hover {
     transform: translateY(-5px);
     box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
   }
-  
+
   a {
     text-decoration: none;
     color: inherit;
-    
+
     h3 {
       margin-top: 0;
       color: #5c5962;
     }
-    
+
     p {
       color: #959396;
       margin-bottom: 0;
@@ -77,19 +77,19 @@ table {
   width: 100%;
   margin-bottom: 1.5rem;
   border-collapse: collapse;
-  
+
   th, td {
     padding: 0.75rem;
     vertical-align: top;
     border-top: 1px solid #dee2e6;
   }
-  
+
   thead th {
     vertical-align: bottom;
     border-bottom: 2px solid #dee2e6;
     background-color: #f8f9fa;
   }
-  
+
   tbody + tbody {
     border-top: 2px solid #dee2e6;
   }
@@ -98,13 +98,13 @@ table {
 // API method styling
 .api-method {
   margin-bottom: 2rem;
-  
+
   h3 {
     margin-top: 0;
     padding-bottom: 0.5rem;
     border-bottom: 1px solid #eaecef;
   }
-  
+
   .method-signature {
     font-family: monospace;
     background-color: #f6f8fa;
@@ -112,18 +112,18 @@ table {
     border-radius: 5px;
     margin-bottom: 1rem;
   }
-  
+
   .parameters {
     h4 {
       margin-top: 1rem;
       margin-bottom: 0.5rem;
     }
   }
-  
+
   .returns {
     margin-top: 1rem;
   }
-  
+
   .example {
     margin-top: 1rem;
   }

@@ -2,8 +2,11 @@
 baseurl: ""
 url: "https://unraid-api-docs.pages.dev"
 
+# Theme settings - use theme instead of remote_theme for Cloudflare
+theme: just-the-docs
+
 # Analytics and SEO settings for production
-google_analytics: 
+google_analytics:
 compress_html:
   clippings: all
   comments: all
