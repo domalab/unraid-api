@@ -1,9 +1,0 @@
-[build]
-command = "cd docs && gem install bundler && bundle install && bundle exec jekyll build --baseurl ''"
-output_directory = "docs/_site"
-
-[build.environment]
-RUBY_VERSION = "3.3.0"
-JEKYLL_ENV = "production"
-LANG = "en_US.UTF-8"
-LC_ALL = "en_US.UTF-8"
