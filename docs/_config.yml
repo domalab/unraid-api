@@ -51,6 +51,10 @@ social:
 # Performance settings
 compression: true
 
+# Include files that would otherwise be ignored
+include:
+  - ads.txt
+
 # Exclude files from processing
 exclude:
   - Gemfile
