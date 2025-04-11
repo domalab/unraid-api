@@ -64,23 +64,7 @@ type Mutation {
   addRoleForUser(input: AddRoleForUserInput!): Boolean!
   addRoleForApiKey(input: AddRoleForApiKeyInput!): Boolean!
   removeRoleFromApiKey(input: RemoveRoleFromApiKeyInput!): Boolean!
-
-  """Start array"""
-  startArray: Array
-
-  """Stop array"""
-  stopArray: Array
-
-  """Add new disk to array"""
-  addDiskToArray(input: arrayDiskInput): Array
-
-  """
-  Remove existing disk from array. NOTE: The array must be stopped before running this otherwise it'll throw an error.
-  """
-  removeDiskFromArray(input: arrayDiskInput): Array
-  mountArrayDisk(id: ID!): Disk
-  unmountArrayDisk(id: ID!): Disk
-  clearArrayDiskStatistics(id: ID!): JSON
+  array: ArrayMutations
 
   """Start parity check"""
   startParityCheck(correct: Boolean): JSON
@@ -243,6 +227,35 @@ enum Role {
   guest
 }
 
+enum ArrayStateInputState {
+  """Start array"""
+  START
+
+  """Stop array"""
+  STOP
+}
+
+input ArrayStateInput {
+  """Array state"""
+  desiredState: ArrayStateInputState!
+}
+
+type ArrayMutations {
+  """Set array state"""
+  setState(input: ArrayStateInput): Array
+
+  """Add new disk to array"""
+  addDiskToArray(input: ArrayDiskInput): Array
+
+  """
+  Remove existing disk from array. NOTE: The array must be stopped before running this otherwise it'll throw an error.
+  """
+  removeDiskFromArray(input: ArrayDiskInput): Array
+  mountArrayDisk(id: ID!): Disk
+  unmountArrayDisk(id: ID!): Disk
+  clearArrayDiskStatistics(id: ID!): JSON
+}
+
 type Subscription {
   array: Array!
   parityHistory: ParityCheck!
@@ -278,7 +291,7 @@ type Subscription {
   vms: Vms
 }
 
-input arrayDiskInput {
+input ArrayDiskInput {
   """Disk ID"""
   id: ID!
 
@@ -663,6 +676,9 @@ type ConnectSettingsValues {
 
   """The port used for Remote Access."""
   port: Port
+
+  """A list of Unique Unraid Account ID's."""
+  ssoUserIds: [String!]!
 }
 
 """
@@ -690,6 +706,9 @@ input ApiSettingsInput {
   Ignored if accessType is DISABLED or forwardType is UPNP.
   """
   port: Port
+
+  """A list of Unique Unraid Account ID's."""
+  ssoUserIds: [String!]
 }
 
 type ConnectSettings implements Node {
@@ -840,6 +859,12 @@ type Docker implements Node {
   id: ID!
   containers: [DockerContainer!]
   networks: [DockerNetwork!]
+  mutations: DockerMutations!
+}
+
+type DockerMutations {
+  startContainer(id: ID!): DockerContainer!
+  stopContainer(id: ID!): DockerContainer!
 }
 
 type DockerNetwork {
