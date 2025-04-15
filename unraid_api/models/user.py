@@ -1,8 +1,8 @@
 """User models for unraid_api."""
-from typing import Dict, List, Optional, Any, Union
+from typing import List, Optional
 from enum import Enum
 
-from pydantic import BaseModel, ConfigDict, Field, EmailStr
+from pydantic import BaseModel, ConfigDict, Field
 
 
 class UserRole(str, Enum):

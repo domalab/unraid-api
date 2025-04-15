@@ -5,12 +5,8 @@ from typing import Any, Dict, Optional
 
 import httpx
 
-from .exceptions import (
-    APIError,
-    AuthenticationError,
-    ConnectionError,
-    GraphQLError,
-)
+from .exceptions import (APIError, AuthenticationError, ConnectionError,
+                         GraphQLError)
 
 logger = logging.getLogger(__name__)
 
@@ -100,7 +96,7 @@ class AsyncUnraidClient:
         self.auth = AsyncAuthManager(host, api_key, port, use_ssl, token_persistence_path)
 
         # Resource clients will be initialized in the get_resource method
-        self._resources = {}
+        self._resources: Dict[str, Any] = {}
 
     # Note: Username/password authentication has been removed as Unraid GraphQL API
     # now only supports API key authentication

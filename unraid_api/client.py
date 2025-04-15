@@ -6,20 +6,16 @@ from typing import Any, Dict, Optional
 
 import httpx
 
-from .exceptions import (
-    APIError,
-    AuthenticationError,
-    ConnectionError,
-    GraphQLError,
-)
+from .exceptions import (APIError, AuthenticationError, ConnectionError,
+                         GraphQLError)
 from .resources.array import ArrayResource
+from .resources.config import ConfigResource
 from .resources.disk import DiskResource
 from .resources.docker import DockerResource
-from .resources.vm import VMResource
+from .resources.info import InfoResource
 from .resources.notification import NotificationResource
 from .resources.user import UserResource
-from .resources.info import InfoResource
-from .resources.config import ConfigResource
+from .resources.vm import VMResource
 
 logger = logging.getLogger(__name__)
 
@@ -56,7 +52,7 @@ class UnraidClient:
         self.verify_ssl = verify_ssl
         self.api_key = api_key
         self._base_url = f"{'https' if use_ssl else 'http'}://{host}:{port}/graphql"
-        self._followed_url = None
+        self._followed_url: Optional[str] = None
 
         # Set up headers with API key
         self._headers = {
@@ -99,6 +95,8 @@ class UnraidClient:
                 logger.debug(f"Discovered redirect URL: {redirect_url}")
 
                 # Update our base URL
+                if self._followed_url is None:
+                    self._followed_url = ""
                 self._followed_url = redirect_url
 
                 # Extract domain for Host header if needed

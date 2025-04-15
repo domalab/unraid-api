@@ -1,29 +1,29 @@
 """User resource for unraid_api."""
 import logging
-from typing import Any, Dict, List, Optional, Union
+from typing import Any, Dict, List, Optional, cast
 
-from ..exceptions import APIError, GraphQLError, OperationError
+from ..exceptions import APIError, OperationError
 
 logger = logging.getLogger(__name__)
 
 
 class UserResource:
     """User resource for the Unraid GraphQL API."""
-    
+
     def __init__(self, client):
         """Initialize the User resource.
-        
+
         Args:
             client: The Unraid client
         """
         self.client = client
-    
+
     def get_users(self) -> List[Dict[str, Any]]:
         """Get all users.
-        
+
         Returns:
             List of users
-            
+
         Raises:
             Various exceptions from execute_query
         """
@@ -40,23 +40,23 @@ class UserResource:
             }
         }
         """
-        
+
         result = self.client.execute_query(query)
-        
+
         if "users" not in result:
             raise APIError("Invalid response format: missing users field")
-        
+
         return result["users"]
-    
+
     def get_user(self, id: str) -> Dict[str, Any]:
         """Get a user by ID.
-        
+
         Args:
             id: The user ID
-            
+
         Returns:
             The user info
-            
+
         Raises:
             Various exceptions from execute_query
         """
@@ -73,24 +73,24 @@ class UserResource:
             }
         }
         """
-        
+
         variables = {
             "id": id
         }
-        
+
         result = self.client.execute_query(query, variables)
-        
+
         if "user" not in result:
             raise APIError("Invalid response format: missing user field")
-        
+
         return result["user"]
-    
+
     def get_current_user(self) -> Dict[str, Any]:
         """Get the current authenticated user.
-        
+
         Returns:
             The current user info
-            
+
         Raises:
             Various exceptions from execute_query
         """
@@ -107,19 +107,19 @@ class UserResource:
             }
         }
         """
-        
+
         result = self.client.execute_query(query)
-        
+
         if "currentUser" not in result:
             raise APIError("Invalid response format: missing currentUser field")
-        
+
         return result["currentUser"]
-    
-    def create_user(self, username: str, password: str, name: Optional[str] = None, 
-                   description: Optional[str] = None, email: Optional[str] = None, 
+
+    def create_user(self, username: str, password: str, name: Optional[str] = None,
+                   description: Optional[str] = None, email: Optional[str] = None,
                    roles: Optional[List[str]] = None) -> Dict[str, Any]:
         """Create a new user.
-        
+
         Args:
             username: The username
             password: The password
@@ -127,10 +127,10 @@ class UserResource:
             description: The description (optional)
             email: The email address (optional)
             roles: The list of roles (optional)
-            
+
         Returns:
             The mutation response
-            
+
         Raises:
             Various exceptions from execute_query
         """
@@ -150,39 +150,43 @@ class UserResource:
             }
         }
         """
-        
+
         variables = {
             "input": {
                 "username": username,
                 "password": password
             }
         }
-        
+
         if name is not None:
-            variables["input"]["name"] = name
-        
+            input_dict = cast(Dict[str, Any], variables["input"])
+            input_dict["name"] = name
+
         if description is not None:
-            variables["input"]["description"] = description
-        
+            input_dict = cast(Dict[str, Any], variables["input"])
+            input_dict["description"] = description
+
         if email is not None:
-            variables["input"]["email"] = email
-        
+            input_dict = cast(Dict[str, Any], variables["input"])
+            input_dict["email"] = email
+
         if roles is not None:
-            variables["input"]["roles"] = roles
-        
+            input_dict = cast(Dict[str, Any], variables["input"])
+            input_dict["roles"] = roles.copy() if roles else []
+
         result = self.client.execute_query(mutation, variables)
-        
+
         if not result.get("createUser", {}).get("success", False):
             message = result.get("createUser", {}).get("message", "Unknown error")
             raise OperationError(f"Failed to create user: {message}")
-        
+
         return result["createUser"]
-    
-    def update_user(self, id: str, username: Optional[str] = None, 
+
+    def update_user(self, id: str, username: Optional[str] = None,
                    name: Optional[str] = None, description: Optional[str] = None,
                    email: Optional[str] = None, roles: Optional[List[str]] = None) -> Dict[str, Any]:
         """Update a user.
-        
+
         Args:
             id: The user ID
             username: The new username (optional)
@@ -190,10 +194,10 @@ class UserResource:
             description: The new description (optional)
             email: The new email address (optional)
             roles: The new list of roles (optional)
-            
+
         Returns:
             The mutation response
-            
+
         Raises:
             Various exceptions from execute_query
         """
@@ -213,45 +217,50 @@ class UserResource:
             }
         }
         """
-        
+
         variables = {
             "id": id,
             "input": {}
         }
-        
+
         if username is not None:
-            variables["input"]["username"] = username
-        
+            input_dict = cast(Dict[str, Any], variables["input"])
+            input_dict["username"] = username
+
         if name is not None:
-            variables["input"]["name"] = name
-        
+            input_dict = cast(Dict[str, Any], variables["input"])
+            input_dict["name"] = name
+
         if description is not None:
-            variables["input"]["description"] = description
-        
+            input_dict = cast(Dict[str, Any], variables["input"])
+            input_dict["description"] = description
+
         if email is not None:
-            variables["input"]["email"] = email
-        
+            input_dict = cast(Dict[str, Any], variables["input"])
+            input_dict["email"] = email
+
         if roles is not None:
-            variables["input"]["roles"] = roles
-        
+            input_dict = cast(Dict[str, Any], variables["input"])
+            input_dict["roles"] = roles.copy() if roles else []
+
         result = self.client.execute_query(mutation, variables)
-        
+
         if not result.get("updateUser", {}).get("success", False):
             message = result.get("updateUser", {}).get("message", "Unknown error")
             raise OperationError(f"Failed to update user: {message}")
-        
+
         return result["updateUser"]
-    
+
     def change_user_password(self, id: str, password: str) -> Dict[str, Any]:
         """Change a user's password.
-        
+
         Args:
             id: The user ID
             password: The new password
-            
+
         Returns:
             The mutation response
-            
+
         Raises:
             Various exceptions from execute_query
         """
@@ -263,29 +272,29 @@ class UserResource:
             }
         }
         """
-        
+
         variables = {
             "id": id,
             "password": password
         }
-        
+
         result = self.client.execute_query(mutation, variables)
-        
+
         if not result.get("changeUserPassword", {}).get("success", False):
             message = result.get("changeUserPassword", {}).get("message", "Unknown error")
             raise OperationError(f"Failed to change user password: {message}")
-        
+
         return result["changeUserPassword"]
-    
+
     def delete_user(self, id: str) -> Dict[str, Any]:
         """Delete a user.
-        
+
         Args:
             id: The user ID
-            
+
         Returns:
             The mutation response
-            
+
         Raises:
             Various exceptions from execute_query
         """
@@ -297,37 +306,37 @@ class UserResource:
             }
         }
         """
-        
+
         variables = {
             "id": id
         }
-        
+
         result = self.client.execute_query(mutation, variables)
-        
+
         if not result.get("deleteUser", {}).get("success", False):
             message = result.get("deleteUser", {}).get("message", "Unknown error")
             raise OperationError(f"Failed to delete user: {message}")
-        
+
         return result["deleteUser"]
 
 
 class AsyncUserResource:
     """Async User resource for the Unraid GraphQL API."""
-    
+
     def __init__(self, client):
         """Initialize the User resource.
-        
+
         Args:
             client: The Unraid client
         """
         self.client = client
-    
+
     async def get_users(self) -> List[Dict[str, Any]]:
         """Get all users.
-        
+
         Returns:
             List of users
-            
+
         Raises:
             Various exceptions from execute_query
         """
@@ -344,23 +353,23 @@ class AsyncUserResource:
             }
         }
         """
-        
+
         result = await self.client.execute_query(query)
-        
+
         if "users" not in result:
             raise APIError("Invalid response format: missing users field")
-        
+
         return result["users"]
-    
+
     async def get_user(self, id: str) -> Dict[str, Any]:
         """Get a user by ID.
-        
+
         Args:
             id: The user ID
-            
+
         Returns:
             The user info
-            
+
         Raises:
             Various exceptions from execute_query
         """
@@ -377,24 +386,24 @@ class AsyncUserResource:
             }
         }
         """
-        
+
         variables = {
             "id": id
         }
-        
+
         result = await self.client.execute_query(query, variables)
-        
+
         if "user" not in result:
             raise APIError("Invalid response format: missing user field")
-        
+
         return result["user"]
-    
+
     async def get_current_user(self) -> Dict[str, Any]:
         """Get the current authenticated user.
-        
+
         Returns:
             The current user info
-            
+
         Raises:
             Various exceptions from execute_query
         """
@@ -411,19 +420,19 @@ class AsyncUserResource:
             }
         }
         """
-        
+
         result = await self.client.execute_query(query)
-        
+
         if "currentUser" not in result:
             raise APIError("Invalid response format: missing currentUser field")
-        
+
         return result["currentUser"]
-    
-    async def create_user(self, username: str, password: str, name: Optional[str] = None, 
-                        description: Optional[str] = None, email: Optional[str] = None, 
+
+    async def create_user(self, username: str, password: str, name: Optional[str] = None,
+                        description: Optional[str] = None, email: Optional[str] = None,
                         roles: Optional[List[str]] = None) -> Dict[str, Any]:
         """Create a new user.
-        
+
         Args:
             username: The username
             password: The password
@@ -431,10 +440,10 @@ class AsyncUserResource:
             description: The description (optional)
             email: The email address (optional)
             roles: The list of roles (optional)
-            
+
         Returns:
             The mutation response
-            
+
         Raises:
             Various exceptions from execute_query
         """
@@ -454,39 +463,43 @@ class AsyncUserResource:
             }
         }
         """
-        
+
         variables = {
             "input": {
                 "username": username,
                 "password": password
             }
         }
-        
+
         if name is not None:
-            variables["input"]["name"] = name
-        
+            input_dict = cast(Dict[str, Any], variables["input"])
+            input_dict["name"] = name
+
         if description is not None:
-            variables["input"]["description"] = description
-        
+            input_dict = cast(Dict[str, Any], variables["input"])
+            input_dict["description"] = description
+
         if email is not None:
-            variables["input"]["email"] = email
-        
+            input_dict = cast(Dict[str, Any], variables["input"])
+            input_dict["email"] = email
+
         if roles is not None:
-            variables["input"]["roles"] = roles
-        
+            input_dict = cast(Dict[str, Any], variables["input"])
+            input_dict["roles"] = roles.copy() if roles else []
+
         result = await self.client.execute_query(mutation, variables)
-        
+
         if not result.get("createUser", {}).get("success", False):
             message = result.get("createUser", {}).get("message", "Unknown error")
             raise OperationError(f"Failed to create user: {message}")
-        
+
         return result["createUser"]
-    
-    async def update_user(self, id: str, username: Optional[str] = None, 
+
+    async def update_user(self, id: str, username: Optional[str] = None,
                         name: Optional[str] = None, description: Optional[str] = None,
                         email: Optional[str] = None, roles: Optional[List[str]] = None) -> Dict[str, Any]:
         """Update a user.
-        
+
         Args:
             id: The user ID
             username: The new username (optional)
@@ -494,10 +507,10 @@ class AsyncUserResource:
             description: The new description (optional)
             email: The new email address (optional)
             roles: The new list of roles (optional)
-            
+
         Returns:
             The mutation response
-            
+
         Raises:
             Various exceptions from execute_query
         """
@@ -517,45 +530,50 @@ class AsyncUserResource:
             }
         }
         """
-        
+
         variables = {
             "id": id,
             "input": {}
         }
-        
+
         if username is not None:
-            variables["input"]["username"] = username
-        
+            input_dict = cast(Dict[str, Any], variables["input"])
+            input_dict["username"] = username
+
         if name is not None:
-            variables["input"]["name"] = name
-        
+            input_dict = cast(Dict[str, Any], variables["input"])
+            input_dict["name"] = name
+
         if description is not None:
-            variables["input"]["description"] = description
-        
+            input_dict = cast(Dict[str, Any], variables["input"])
+            input_dict["description"] = description
+
         if email is not None:
-            variables["input"]["email"] = email
-        
+            input_dict = cast(Dict[str, Any], variables["input"])
+            input_dict["email"] = email
+
         if roles is not None:
-            variables["input"]["roles"] = roles
-        
+            input_dict = cast(Dict[str, Any], variables["input"])
+            input_dict["roles"] = roles.copy() if roles else []
+
         result = await self.client.execute_query(mutation, variables)
-        
+
         if not result.get("updateUser", {}).get("success", False):
             message = result.get("updateUser", {}).get("message", "Unknown error")
             raise OperationError(f"Failed to update user: {message}")
-        
+
         return result["updateUser"]
-    
+
     async def change_user_password(self, id: str, password: str) -> Dict[str, Any]:
         """Change a user's password.
-        
+
         Args:
             id: The user ID
             password: The new password
-            
+
         Returns:
             The mutation response
-            
+
         Raises:
             Various exceptions from execute_query
         """
@@ -567,29 +585,29 @@ class AsyncUserResource:
             }
         }
         """
-        
+
         variables = {
             "id": id,
             "password": password
         }
-        
+
         result = await self.client.execute_query(mutation, variables)
-        
+
         if not result.get("changeUserPassword", {}).get("success", False):
             message = result.get("changeUserPassword", {}).get("message", "Unknown error")
             raise OperationError(f"Failed to change user password: {message}")
-        
+
         return result["changeUserPassword"]
-    
+
     async def delete_user(self, id: str) -> Dict[str, Any]:
         """Delete a user.
-        
+
         Args:
             id: The user ID
-            
+
         Returns:
             The mutation response
-            
+
         Raises:
             Various exceptions from execute_query
         """
@@ -601,15 +619,15 @@ class AsyncUserResource:
             }
         }
         """
-        
+
         variables = {
             "id": id
         }
-        
+
         result = await self.client.execute_query(mutation, variables)
-        
+
         if not result.get("deleteUser", {}).get("success", False):
             message = result.get("deleteUser", {}).get("message", "Unknown error")
             raise OperationError(f"Failed to delete user: {message}")
-        
+
         return result["deleteUser"]

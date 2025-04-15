@@ -1,8 +1,8 @@
 """System information resource for unraid_api."""
 import logging
-from typing import Any, Dict, List, Optional, Union
+from typing import Any, Dict
 
-from ..exceptions import APIError, GraphQLError, OperationError
+from ..exceptions import APIError, OperationError
 
 logger = logging.getLogger(__name__)
 

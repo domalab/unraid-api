@@ -1,5 +1,5 @@
 """Notification models for unraid_api."""
-from typing import Dict, List, Optional, Any, Union, Literal
+from typing import Optional
 from enum import Enum
 
 from pydantic import BaseModel, ConfigDict, Field

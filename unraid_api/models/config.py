@@ -1,8 +1,7 @@
 """Config models for unraid_api."""
-from typing import Dict, List, Optional, Any, Union, Literal
-from enum import Enum
+from typing import Dict, List, Optional, Any
 
-from pydantic import BaseModel, ConfigDict, Field, EmailStr
+from pydantic import BaseModel, ConfigDict, Field
 
 
 class NetworkInterface(BaseModel):

@@ -10,25 +10,26 @@ import logging
 import os
 import sys
 import time
-from typing import Dict, List, Optional, Any, Tuple
+from typing import Any, Dict, Optional, Tuple
 
 import httpx
+from rich import box
 from rich.console import Console
 from rich.panel import Panel
-from rich.progress import Progress
 from rich.table import Table
-from rich import box
 
 # Import UnraidClient
 try:
     from unraid_api.client import UnraidClient
-    from unraid_api.exceptions import GraphQLError, APIError, AuthenticationError
+    from unraid_api.exceptions import (APIError, AuthenticationError,
+                                       GraphQLError)
 except ImportError:
     try:
         # Fallback for development/testing environments
         sys.path.append(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
         from unraid_api.client import UnraidClient
-        from unraid_api.exceptions import GraphQLError, APIError, AuthenticationError
+        from unraid_api.exceptions import (APIError, AuthenticationError,
+                                           GraphQLError)
     except ImportError:
         print("ERROR: Cannot import UnraidClient. Make sure the unraid-api package is installed or in the correct path.")
         sys.exit(1)
@@ -67,9 +68,9 @@ class UnraidAPIClient:
         self.use_ssl = use_ssl
         self.verify_ssl = verify_ssl
         self.timeout = timeout
-        self.client = None
+        self.client: Optional[UnraidClient] = None
 
-        self.results = {}
+        self.results: Dict[str, Any] = {}
 
     def connect(self) -> bool:
         """Connect to the Unraid server.
@@ -82,7 +83,8 @@ class UnraidAPIClient:
         """
         try:
             original_ip = self.ip
-            protocol = "https" if self.use_ssl else "http"
+            # protocol is not used but kept for future reference
+            # protocol = "https" if self.use_ssl else "http"
 
             # Check if this looks like a plain IP address (contains dots and digits)
             if all(part.isdigit() for part in original_ip.split('.')) and '.' in original_ip:
@@ -203,7 +205,8 @@ class UnraidAPIClient:
                     if 'errors' in response_json:
                         for err in response_json['errors']:
                             console.print(f"  [bold red]Error:[/] {err.get('message', 'Unknown error')}")
-                except:
+                except Exception:
+                    # Silently ignore parsing errors in error responses
                     pass
         else:
             console.print(f"[bold red]Error:[/] {error}")
@@ -216,10 +219,16 @@ class UnraidAPIClient:
         """
         try:
             with console.status("[bold green]Querying system information..."):
-                result, success = self.execute_with_retry(self.client.info.get_system_info)
+                if self.client is not None:
+                    result, success = self.execute_with_retry(self.client.info.get_system_info)
+                else:
+                    result, success = None, False
 
                 # Get spindown delay
-                spindown_result, spindown_success = self.execute_with_retry(self.client.info.get_spindown_delay)
+                if self.client is not None:
+                    spindown_result, spindown_success = self.execute_with_retry(self.client.info.get_spindown_delay)
+                else:
+                    spindown_result, spindown_success = None, False
                 if spindown_success:
                     self.results["spindown_delay"] = spindown_result
 
@@ -241,7 +250,10 @@ class UnraidAPIClient:
         """
         try:
             with console.status("[bold green]Querying array status..."):
-                result, success = self.execute_with_retry(self.client.array.get_array_status)
+                if self.client is not None:
+                    result, success = self.execute_with_retry(self.client.array.get_array_status)
+                else:
+                    result, success = None, False
 
             if success:
                 self.results["array_status"] = result
@@ -261,7 +273,10 @@ class UnraidAPIClient:
         """
         try:
             with console.status("[bold green]Querying disk information..."):
-                result, success = self.execute_with_retry(self.client.disk.get_disks)
+                if self.client is not None:
+                    result, success = self.execute_with_retry(self.client.disk.get_disks)
+                else:
+                    result, success = None, False
 
             if success:
                 self.results["disks"] = result
@@ -304,7 +319,10 @@ class UnraidAPIClient:
 
             with console.status(f"[bold green]Querying SMART data for disk {disk_id.split(':')[-1]}..."):
                 try:
-                    result, success = self.execute_with_retry(self.client.disk.get_disk_smart, disk_id)
+                    if self.client is not None:
+                        result, success = self.execute_with_retry(self.client.disk.get_disk_smart, disk_id)
+                    else:
+                        result, success = None, False
                 except Exception as e:
                     # SMART data might not be available for this disk
                     console.print(f"[bold yellow]SMART data not available for this disk: {e}[/]")
@@ -315,7 +333,7 @@ class UnraidAPIClient:
                 self.display_smart_data(disk_id)
                 return result
             else:
-                console.print(f"[bold yellow]SMART data not available for this disk[/]")
+                console.print("[bold yellow]SMART data not available for this disk[/]")
             return {}
         except Exception as e:
             logger.error(f"Error getting SMART data: {e}")
@@ -381,7 +399,10 @@ class UnraidAPIClient:
         """
         try:
             with console.status("[bold green]Querying Docker containers..."):
-                result, success = self.execute_with_retry(self.client.docker.get_containers)
+                if self.client is not None:
+                    result, success = self.execute_with_retry(self.client.docker.get_containers)
+                else:
+                    result, success = None, False
 
             if success:
                 self.results["docker_containers"] = result
@@ -401,7 +422,10 @@ class UnraidAPIClient:
         """
         try:
             with console.status("[bold green]Querying virtual machines..."):
-                result, success = self.execute_with_retry(self.client.vm.get_vms)
+                if self.client is not None:
+                    result, success = self.execute_with_retry(self.client.vm.get_vms)
+                else:
+                    result, success = None, False
 
             if success:
                 self.results["vms"] = result
@@ -421,7 +445,10 @@ class UnraidAPIClient:
         """
         try:
             with console.status("[bold green]Querying notifications..."):
-                result, success = self.execute_with_retry(self.client.notification.get_notifications)
+                if self.client is not None:
+                    result, success = self.execute_with_retry(self.client.notification.get_notifications)
+                else:
+                    result, success = None, False
 
             if success:
                 self.results["notifications"] = result
