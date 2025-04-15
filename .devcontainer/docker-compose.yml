@@ -1,0 +1,14 @@
+version: '3.8'
+
+services:
+  app:
+    container_name: unraid-api
+    image: unraid-api:dev
+    build:
+      context: ..
+      dockerfile: .devcontainer/Dockerfile
+    volumes:
+      - ..:/workspace
+    command: sleep infinity
+    environment:
+      - PYTHONPATH=/workspace
