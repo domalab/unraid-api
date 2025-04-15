@@ -52,15 +52,17 @@ class AuthManager:
             return
 
         try:
-            with open(self.token_persistence_path, "r") as f:
-                token_data = json.load(f)
-                self._access_token = token_data.get("access_token")
-                self._refresh_token = token_data.get("refresh_token")
-                self._token_expiry = token_data.get("expiry")
+            # Check if token_persistence_path is a valid file path
+            if isinstance(self.token_persistence_path, str) and os.path.isfile(self.token_persistence_path):
+                with open(self.token_persistence_path, "r") as f:
+                    token_data = json.load(f)
+                    self._access_token = token_data.get("access_token")
+                    self._refresh_token = token_data.get("refresh_token")
+                    self._token_expiry = token_data.get("expiry")
 
-                # Check if token is expired
-                if self._token_expiry and self._token_expiry < time.time():
-                    logger.info("Loaded token is expired, will need to refresh")
+                    # Check if token is expired
+                    if self._token_expiry and self._token_expiry < time.time():
+                        logger.info("Loaded token is expired, will need to refresh")
         except (FileNotFoundError, json.JSONDecodeError):
             logger.debug("No persisted tokens found or invalid token file")
 
