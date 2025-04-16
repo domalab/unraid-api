@@ -147,15 +147,14 @@ class AsyncUnraidClient:
                     timeout=30.0
                 )
                 response.raise_for_status()
+                data = await response.json()
 
-            data = response.json()
+                if "errors" in data:
+                    errors = data["errors"]
+                    error_message = errors[0].get("message", "Unknown query error")
+                    raise GraphQLError(f"Query failed: {error_message}")
 
-            if "errors" in data:
-                errors = data["errors"]
-                error_message = errors[0].get("message", "Unknown query error")
-                raise GraphQLError(f"Query failed: {error_message}")
-
-            return data["data"]
+                return data["data"]
 
         except httpx.RequestError as e:
             raise ConnectionError(f"Failed to connect to Unraid server: {e}")
