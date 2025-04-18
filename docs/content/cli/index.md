@@ -50,12 +50,59 @@ unraid-cli system
 
 The CLI provides commands for interacting with different aspects of the Unraid server:
 
-- `system` - Get system information
-- `array` - Manage the array
-- `disks` - Work with disks
+- `system` - Get system information (CPU, memory, OS details)
+- `array` - Manage the array (status, parity check, disks)
+- `disks` - List all disks with basic information
+- `disk` - Get detailed information about a specific disk
+- `smart` - Get SMART data for a specific disk
 - `docker` - Manage Docker containers
 - `vms` - Manage virtual machines
 - `notifications` - Manage notifications
+- `all` - Get all available information
+
+## Examples
+
+### Get System Information
+
+```bash
+unraid-cli --ip 192.168.1.10 --key YOUR_API_KEY --query system
+```
+
+### Get Array Status
+
+```bash
+unraid-cli --ip 192.168.1.10 --key YOUR_API_KEY --query array
+```
+
+### List All Disks
+
+```bash
+unraid-cli --ip 192.168.1.10 --key YOUR_API_KEY --query disks
+```
+
+### Get Detailed Information About a Specific Disk
+
+```bash
+unraid-cli --ip 192.168.1.10 --key YOUR_API_KEY --query disk --disk-id "disk:sda"
+```
+
+### Get SMART Data for a Specific Disk
+
+```bash
+unraid-cli --ip 192.168.1.10 --key YOUR_API_KEY --query smart --disk-id "disk:sda"
+```
+
+### List Docker Containers
+
+```bash
+unraid-cli --ip 192.168.1.10 --key YOUR_API_KEY --query docker
+```
+
+### List Virtual Machines
+
+```bash
+unraid-cli --ip 192.168.1.10 --key YOUR_API_KEY --query vms
+```
 
 ## Next Steps
 

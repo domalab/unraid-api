@@ -37,6 +37,16 @@ class DiskResource:
                 type
                 temperature
                 smartStatus
+                vendor
+                serialNum
+                interfaceType
+                rotational
+                firmwareRevision
+                partitions {
+                    name
+                    fsType
+                    size
+                }
             }
         }
         """
@@ -425,6 +435,16 @@ class AsyncDiskResource:
                 type
                 temperature
                 smartStatus
+                vendor
+                serialNum
+                interfaceType
+                rotational
+                firmwareRevision
+                partitions {
+                    name
+                    fsType
+                    size
+                }
             }
         }
         """

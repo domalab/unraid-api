@@ -296,6 +296,29 @@ class UnraidAPIClient:
             console.print(f"[bold red]Error getting disk info: {e}[/]")
             return {}
 
+    def query_disk_detail(self, disk_id: str) -> Dict:
+        """Query detailed information about a specific disk.
+
+        Args:
+            disk_id: The ID of the disk to query
+
+        Returns:
+            Dict: Detailed disk information
+        """
+        try:
+            with console.status(f"[bold green]Querying disk {disk_id}..."):
+                result, success = self.execute_with_retry(lambda: self.client.disk.get_disk(disk_id))
+
+            if success:
+                self.results["disk_detail"] = result
+                self.display_disk_detail()
+                return result
+            return {}
+        except Exception as e:
+            logger.error(f"Error getting disk detail: {e}")
+            console.print(f"[bold red]Error getting disk detail: {e}[/]")
+            return {}
+
     def query_disk_smart(self, disk_id: str) -> Dict:
         """Query SMART data for a disk.
 
@@ -435,7 +458,9 @@ class UnraidAPIClient:
         except Exception as e:
             logger.error(f"Error getting VMs: {e}")
             console.print(f"[bold red]Error getting VMs: {e}[/]")
-            return {}
+            # Create a placeholder result to avoid errors in display_vms
+            self.results["vms"] = {"domain": []}
+            return {"domain": []}
 
     def query_notifications(self) -> Dict:
         """Query notifications.
@@ -574,7 +599,41 @@ class UnraidAPIClient:
         table.add_column("Property", style="cyan")
         table.add_column("Value", style="green")
 
-        table.add_row("State", status.get("state", "Unknown"))
+        # Display state with color based on status
+        state = status.get("state", "Unknown")
+        if state == "STARTED":
+            state_display = "[bold green]STARTED[/]"
+        elif state == "STOPPED":
+            state_display = "[bold red]STOPPED[/]"
+        else:
+            state_display = state
+
+        table.add_row("State", state_display)
+
+        # Display actual state if different from reported state
+        if "actual_state" in status and status["actual_state"] != state:
+            table.add_row("Actual State", status["actual_state"])
+
+        # Display parity check status if available
+        if "vars" in status:
+            vars_data = status["vars"]
+
+            # Display filesystem state if available
+            if "fsState" in vars_data and vars_data["fsState"]:
+                table.add_row("Filesystem State", vars_data["fsState"])
+
+            # Display parity check progress if running
+            if "mdResync" in vars_data and vars_data["mdResync"] > 0:
+                resync_percent = vars_data.get("mdResync", 0)
+                resync_pos = vars_data.get("mdResyncPos", "0")
+                resync_action = vars_data.get("mdResyncAction", "")
+
+                table.add_row("Parity Check", "[bold yellow]RUNNING[/]")
+                table.add_row("Parity Action", resync_action)
+                table.add_row("Parity Progress", f"{resync_percent}% ({resync_pos})")
+
+                if "fsProgress" in vars_data and vars_data["fsProgress"]:
+                    table.add_row("Progress Details", vars_data["fsProgress"])
 
         if "capacity" in status and "kilobytes" in status["capacity"]:
             capacity = status["capacity"]["kilobytes"]
@@ -660,8 +719,10 @@ class UnraidAPIClient:
         table.add_column("Name", style="green")
         table.add_column("Size", style="blue")
         table.add_column("Type", style="magenta")
+        table.add_column("Interface", style="cyan")
         table.add_column("Temp", style="yellow")
         table.add_column("SMART", style="red")
+        table.add_column("Serial", style="green")
 
         for disk in disks:
             device = disk.get("device", "Unknown")
@@ -669,6 +730,18 @@ class UnraidAPIClient:
             size_bytes = disk.get("size", 0)
             size_tb = size_bytes / (1024 ** 4)  # Convert to TB
             disk_type = disk.get("type", "Unknown")
+            interface_type = disk.get("interfaceType", "Unknown")
+            vendor = disk.get("vendor", "")
+            serial = disk.get("serialNum", "Unknown")
+            rotational = "HDD" if disk.get("rotational", True) else "SSD"
+            firmware = disk.get("firmwareRevision", "")
+
+            # Format name with vendor if available
+            if vendor and vendor not in name:
+                name = f"{vendor} {name}"
+
+            # Format type with rotational info
+            disk_type = f"{disk_type} ({rotational})"
 
             # Get temperature
             temp = disk.get("temperature", -1)
@@ -676,16 +749,60 @@ class UnraidAPIClient:
 
             # Get SMART status
             smart_status = disk.get("smartStatus", "UNKNOWN")
+            if smart_status == "OK":
+                smart_status = "[bold green]OK[/]"
+            elif smart_status == "UNKNOWN":
+                smart_status = "[bold yellow]UNKNOWN[/]"
+            else:
+                smart_status = f"[bold red]{smart_status}[/]"
 
+            # Format size
             if size_tb >= 1:
                 size_str = f"{size_tb:.2f} TB"
             else:
                 size_gb = size_bytes / (1024 ** 3)  # Convert to GB
                 size_str = f"{size_gb:.2f} GB"
 
-            table.add_row(device, name, size_str, disk_type, temp_str, smart_status)
+            # Add row to table
+            table.add_row(device, name, size_str, disk_type, interface_type, temp_str, smart_status, serial)
 
         console.print(table)
+
+        # Display partitions if available
+        has_partitions = False
+        for disk in disks:
+            if disk.get("partitions") and len(disk.get("partitions", [])) > 0:
+                has_partitions = True
+                break
+
+        if has_partitions:
+            console.print("\n")
+            partition_table = Table(title="Disk Partitions", box=box.ROUNDED)
+            partition_table.add_column("Disk", style="cyan")
+            partition_table.add_column("Partition", style="green")
+            partition_table.add_column("Filesystem", style="blue")
+            partition_table.add_column("Size", style="magenta")
+
+            for disk in disks:
+                device = disk.get("device", "Unknown")
+                partitions = disk.get("partitions", [])
+
+                for partition in partitions:
+                    part_name = partition.get("name", "Unknown")
+                    fs_type = partition.get("fsType", "Unknown")
+                    part_size_bytes = partition.get("size", 0)
+
+                    # Format size
+                    part_size_tb = part_size_bytes / (1024 ** 4)  # Convert to TB
+                    if part_size_tb >= 1:
+                        part_size_str = f"{part_size_tb:.2f} TB"
+                    else:
+                        part_size_gb = part_size_bytes / (1024 ** 3)  # Convert to GB
+                        part_size_str = f"{part_size_gb:.2f} GB"
+
+                    partition_table.add_row(device, part_name, fs_type, part_size_str)
+
+            console.print(partition_table)
 
     def display_docker_containers(self):
         """Display Docker container information."""
@@ -747,6 +864,11 @@ class UnraidAPIClient:
         table.add_column("UUID", style="green")
         table.add_column("State", style="blue")
 
+        # Check if we have any VMs
+        if not vms["domain"]:
+            console.print("[bold yellow]No virtual machines found or VM service not running[/]")
+            return
+
         for vm in vms["domain"]:
             name = vm.get("name", "Unknown")
             uuid = vm.get("uuid", "Unknown")
@@ -807,11 +929,187 @@ class UnraidAPIClient:
 
         console.print(table)
 
-    def run_query(self, query_type: str):
+    def display_disk_detail(self):
+        """Display detailed information about a specific disk."""
+        if "disk_detail" not in self.results:
+            console.print("[bold red]Disk detail information not available[/]")
+            return
+
+        disk = self.results["disk_detail"]
+
+        # Create table for disk details
+        table = Table(title=f"Disk Detail: {disk.get('device', 'Unknown')}", box=box.ROUNDED)
+        table.add_column("Property", style="cyan")
+        table.add_column("Value", style="green")
+
+        # Add basic disk information
+        table.add_row("Device", disk.get("device", "Unknown"))
+        table.add_row("Name", disk.get("name", "Unknown"))
+        table.add_row("Model", disk.get("model", "Unknown"))
+        table.add_row("Serial", disk.get("serial", "Unknown"))
+        table.add_row("Vendor", disk.get("vendor", "Unknown"))
+
+        # Add size information
+        size_bytes = disk.get("size", 0)
+        size_tb = size_bytes / (1024 ** 4)  # Convert to TB
+        if size_tb >= 1:
+            size_str = f"{size_tb:.2f} TB"
+        else:
+            size_gb = size_bytes / (1024 ** 3)  # Convert to GB
+            size_str = f"{size_gb:.2f} GB"
+        table.add_row("Size", size_str)
+
+        # Add type information
+        disk_type = disk.get("type", "Unknown")
+        rotational = "HDD" if disk.get("rotational", True) else "SSD"
+        table.add_row("Type", f"{disk_type} ({rotational})")
+
+        # Add interface information
+        table.add_row("Interface", disk.get("interface", "Unknown"))
+        table.add_row("Protocol", disk.get("protocol", "Unknown"))
+
+        # Add status information
+        table.add_row("Status", disk.get("status", "Unknown"))
+
+        # Add temperature information
+        temp = disk.get("temp", -1)
+        temp_str = f"{temp}°C" if temp >= 0 else "N/A"
+        table.add_row("Temperature", temp_str)
+
+        # Add performance information
+        table.add_row("Read Operations", str(disk.get("numReads", 0)))
+        table.add_row("Write Operations", str(disk.get("numWrites", 0)))
+        table.add_row("Errors", str(disk.get("numErrors", 0)))
+
+        # Add spindown information if available
+        if "spindownStatus" in disk:
+            table.add_row("Spindown Status", disk.get("spindownStatus", "Unknown"))
+        if "lastSpindownTime" in disk:
+            table.add_row("Last Spindown", disk.get("lastSpindownTime", "Unknown"))
+
+        console.print(table)
+
+        # Display partitions if available
+        partitions = disk.get("partitions", [])
+        if partitions:
+            console.print("\n")
+            partition_table = Table(title="Disk Partitions", box=box.ROUNDED)
+            partition_table.add_column("Number", style="cyan")
+            partition_table.add_column("Name", style="green")
+            partition_table.add_column("Filesystem", style="blue")
+            partition_table.add_column("Mountpoint", style="magenta")
+            partition_table.add_column("Size", style="yellow")
+            partition_table.add_column("Used", style="red")
+            partition_table.add_column("Free", style="green")
+
+            for partition in partitions:
+                number = str(partition.get("number", "Unknown"))
+                name = partition.get("name", "Unknown")
+                fs_type = partition.get("fsType", "Unknown")
+                mountpoint = partition.get("mountpoint", "")
+
+                # Format sizes
+                size_bytes = partition.get("size", 0)
+                used_bytes = partition.get("used", 0)
+                free_bytes = partition.get("free", 0)
+
+                # Convert to appropriate units
+                size_tb = size_bytes / (1024 ** 4)
+                used_tb = used_bytes / (1024 ** 4)
+                free_tb = free_bytes / (1024 ** 4)
+
+                if size_tb >= 1:
+                    size_str = f"{size_tb:.2f} TB"
+                    used_str = f"{used_tb:.2f} TB"
+                    free_str = f"{free_tb:.2f} TB"
+                else:
+                    size_gb = size_bytes / (1024 ** 3)
+                    used_gb = used_bytes / (1024 ** 3)
+                    free_gb = free_bytes / (1024 ** 3)
+                    size_str = f"{size_gb:.2f} GB"
+                    used_str = f"{used_gb:.2f} GB"
+                    free_str = f"{free_gb:.2f} GB"
+
+                partition_table.add_row(number, name, fs_type, mountpoint, size_str, used_str, free_str)
+
+            console.print(partition_table)
+
+    def display_disk_smart(self):
+        """Display SMART information for a specific disk."""
+        if "disk_smart" not in self.results:
+            console.print("[bold red]Disk SMART information not available[/]")
+            return
+
+        smart = self.results["disk_smart"]
+
+        # Create table for SMART overview
+        table = Table(title="SMART Overview", box=box.ROUNDED)
+        table.add_column("Property", style="cyan")
+        table.add_column("Value", style="green")
+
+        # Add SMART overview information
+        supported = smart.get("supported", False)
+        table.add_row("Supported", "Yes" if supported else "No")
+
+        if supported:
+            enabled = smart.get("enabled", False)
+            table.add_row("Enabled", "Yes" if enabled else "No")
+
+            status = smart.get("status", "Unknown")
+            if status == "OK" or status == "PASS":
+                status_display = "[bold green]PASS[/]"
+            elif status == "FAIL":
+                status_display = "[bold red]FAIL[/]"
+            else:
+                status_display = status
+            table.add_row("Status", status_display)
+
+            temp = smart.get("temperature", -1)
+            temp_str = f"{temp}°C" if temp >= 0 else "N/A"
+            table.add_row("Temperature", temp_str)
+
+        console.print(table)
+
+        # Display SMART attributes if available
+        attributes = smart.get("attributes", [])
+        if attributes:
+            console.print("\n")
+            attr_table = Table(title="SMART Attributes", box=box.ROUNDED)
+            attr_table.add_column("ID", style="cyan")
+            attr_table.add_column("Name", style="green")
+            attr_table.add_column("Value", style="blue")
+            attr_table.add_column("Worst", style="magenta")
+            attr_table.add_column("Threshold", style="yellow")
+            attr_table.add_column("Raw", style="red")
+            attr_table.add_column("Status", style="green")
+
+            for attr in attributes:
+                attr_id = str(attr.get("id", "Unknown"))
+                name = attr.get("name", "Unknown")
+                value = str(attr.get("value", "Unknown"))
+                worst = str(attr.get("worst", "Unknown"))
+                threshold = str(attr.get("threshold", "Unknown"))
+                raw = str(attr.get("raw", "Unknown"))
+                status = attr.get("status", "Unknown")
+
+                # Color the status
+                if status == "OK" or status == "PASS":
+                    status = "[bold green]OK[/]"
+                elif status == "FAIL":
+                    status = "[bold red]FAIL[/]"
+
+                attr_table.add_row(attr_id, name, value, worst, threshold, raw, status)
+
+            console.print(attr_table)
+        elif supported:
+            console.print("[bold yellow]No SMART attributes available[/]")
+
+    def run_query(self, query_type: str, disk_id: str = None):
         """Run a specific query.
 
         Args:
             query_type: The type of query to run
+            disk_id: Optional disk ID for disk-specific queries
         """
         # Store the original IP for display purposes
         original_ip = self.ip
@@ -839,6 +1137,10 @@ class UnraidAPIClient:
             self.query_array_status()
         elif query_type == "disks":
             self.query_disk_info()
+        elif query_type == "disk" and disk_id:
+            self.query_disk_detail(disk_id)
+        elif query_type == "smart" and disk_id:
+            self.query_disk_smart(disk_id)
         elif query_type == "docker":
             self.query_docker_containers()
         elif query_type == "vms":
@@ -928,7 +1230,8 @@ def parse_arguments():
     parser.add_argument("--key", help="API key for authentication")
     parser.add_argument("--port", type=int, default=443, help="Port to connect to (default: 443)")
     parser.add_argument("--query", default="system",
-                      help="Type of query to run (system, array, disks, docker, vms, notifications, all)")
+                      help="Type of query to run (system, array, disks, disk, smart, docker, vms, notifications, all)")
+    parser.add_argument("--disk-id", help="Disk ID for disk-specific queries (used with --query disk or --query smart)")
     parser.add_argument("--no-ssl", action="store_true", help="Disable SSL")
     parser.add_argument("--verify-ssl", action="store_true", help="Verify SSL certificates")
     parser.add_argument("--timeout", type=int, default=30, help="Timeout in seconds for API requests (default: 30)")
@@ -968,7 +1271,7 @@ def main():
     )
 
     # Run query
-    client.run_query(args.query)
+    client.run_query(args.query, args.disk_id)
 
 
 if __name__ == "__main__":

@@ -117,6 +117,14 @@ class ArrayResource:
                     fsType
                 }
             }
+            vars {
+                mdState
+                mdResync
+                mdResyncPos
+                mdResyncAction
+                fsState
+                fsProgress
+            }
         }
         """
 
@@ -125,7 +133,19 @@ class ArrayResource:
         if "array" not in result:
             raise APIError("Invalid response format: missing array field")
 
-        return result["array"]
+        # Combine array and vars data
+        array_data = result["array"]
+
+        # Add vars data if available
+        if "vars" in result:
+            array_data["vars"] = result["vars"]
+
+            # If array state is STOPPED but mdState is STARTED, use mdState
+            if array_data.get("state") == "STOPPED" and result["vars"].get("mdState") == "STARTED":
+                array_data["state"] = "STARTED"
+                array_data["actual_state"] = result["vars"].get("mdState")
+
+        return array_data
 
     def add_disk_to_array(self, slot: str, device: str) -> Dict[str, Any]:
         """Add a disk to the array.
@@ -446,6 +466,14 @@ class AsyncArrayResource:
                     fsType
                 }
             }
+            vars {
+                mdState
+                mdResync
+                mdResyncPos
+                mdResyncAction
+                fsState
+                fsProgress
+            }
         }
         """
 
@@ -454,7 +482,19 @@ class AsyncArrayResource:
         if "array" not in result:
             raise APIError("Invalid response format: missing array field")
 
-        return result["array"]
+        # Combine array and vars data
+        array_data = result["array"]
+
+        # Add vars data if available
+        if "vars" in result:
+            array_data["vars"] = result["vars"]
+
+            # If array state is STOPPED but mdState is STARTED, use mdState
+            if array_data.get("state") == "STOPPED" and result["vars"].get("mdState") == "STARTED":
+                array_data["state"] = "STARTED"
+                array_data["actual_state"] = result["vars"].get("mdState")
+
+        return array_data
 
     async def add_disk_to_array(self, slot: str, device: str) -> Dict[str, Any]:
         """Add a disk to the array.
