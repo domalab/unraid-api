@@ -1,6 +1,6 @@
-# Allow all crawlers
+# robots.txt for https://domalab.github.io/unraid-api/
 User-agent: *
 Allow: /
 
 # Sitemap location
-Sitemap: {{ site.url }}/sitemap.xml
+Sitemap: https://domalab.github.io/unraid-api/sitemap.xml

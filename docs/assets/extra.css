@@ -1,0 +1,61 @@
+/* Custom styles for Unraid API Documentation */
+
+/* Improve code block contrast in dark mode */
+[data-md-color-scheme="slate"] .highlight {
+  background-color: hsla(var(--md-hue), 15%, 15%, 1);
+}
+
+/* Adjust link colors for better visibility */
+[data-md-color-scheme="slate"] a:not(.md-button) {
+  color: var(--md-accent-fg-color);
+}
+
+/* Hide Home text in the header when viewing the home page */
+.md-header__topic[data-md-component="header-topic"] span:not(:empty) {
+  display: none;
+}
+
+/* Custom card styling */
+.grid.cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(16rem, 1fr));
+  gap: 1rem;
+  margin: 1rem 0;
+}
+
+.grid.cards > p {
+  margin: 0;
+}
+
+.grid.cards > p > a {
+  display: block;
+  height: 100%;
+  padding: 1rem;
+  border-radius: 0.2rem;
+  box-shadow: var(--md-shadow-z2);
+  transition: transform 0.25s, box-shadow 0.25s;
+}
+
+.grid.cards > p > a:hover {
+  transform: translateY(-0.1rem);
+  box-shadow: var(--md-shadow-z3);
+}
+
+/* Grid item styles for quick links */
+.grid-item {
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  border-radius: 4px;
+  padding: 1rem;
+  margin-bottom: 1rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+  transition: transform 0.25s, box-shadow 0.25s;
+}
+
+.grid-item:hover {
+  transform: translateY(-0.1rem);
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+[data-md-color-scheme="slate"] .grid-item {
+  border-color: rgba(255, 255, 255, 0.1);
+} 
