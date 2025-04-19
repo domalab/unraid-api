@@ -26,45 +26,45 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           fetch-depth: 0
-      
+
       - name: Setup Python
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v5
         with:
           python-version: '3.10'
           cache: 'pip'
-      
+
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
           pip install mkdocs-material
           pip install mkdocs-minify-plugin
           pip install mkdocs-git-revision-date-localized-plugin
-      
+
       - name: Setup Pages
         id: pages
-        uses: actions/configure-pages@v3
-      
+        uses: actions/configure-pages@v4
+
       - name: Process Sitemap Template
         run: |
           # Get the current date in UTC format for sitemap
           BUILD_DATE=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
           # Replace placeholders in sitemap.xml
           sed -i "s/{{ build_date_utc }}/$BUILD_DATE/g" docs/sitemap.xml
-      
+
       - name: Build with MkDocs
         run: mkdocs build
-      
+
       - name: Copy robots.txt, ads.txt, and sitemap.xml to site
         run: |
           cp robots.txt site/
           cp ads.txt site/
           cp docs/sitemap.xml site/
-      
+
       - name: Upload artifact
-        uses: actions/upload-pages-artifact@v2
+        uses: actions/upload-pages-artifact@v3
         with:
           path: ./site
 
@@ -78,4 +78,4 @@ jobs:
     steps:
       - name: Deploy to GitHub Pages
         id: deployment
-        uses: actions/deploy-pages@v2 
+        uses: actions/deploy-pages@v4
