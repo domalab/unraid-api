@@ -1,6 +1,6 @@
 # Redirects for Cloudflare Pages
-# Redirect default Netlify subdomain to primary domain
-https://unraid-api-docs.pages.dev/* https://docs.unraid-api.com/:splat 301!
+# Redirect default Cloudflare Pages subdomain to primary domain
+https://unraid-api.pages.dev/* https://unraid-api.domalab.net/:splat 301!
 
 # Redirect old URLs to new structure if needed
 # /old-page /new-page 301
