@@ -307,7 +307,10 @@ class UnraidAPIClient:
         """
         try:
             with console.status(f"[bold green]Querying disk {disk_id}..."):
-                result, success = self.execute_with_retry(lambda: self.client.disk.get_disk(disk_id))
+                if self.client is not None:
+                    result, success = self.execute_with_retry(lambda: self.client.disk.get_disk(disk_id))
+                else:
+                    result, success = None, False
 
             if success:
                 self.results["disk_detail"] = result
@@ -734,7 +737,8 @@ class UnraidAPIClient:
             vendor = disk.get("vendor", "")
             serial = disk.get("serialNum", "Unknown")
             rotational = "HDD" if disk.get("rotational", True) else "SSD"
-            firmware = disk.get("firmwareRevision", "")
+            # Firmware version is retrieved but not currently displayed in the table
+            # firmware = disk.get("firmwareRevision", "")
 
             # Format name with vendor if available
             if vendor and vendor not in name:
@@ -1104,7 +1108,7 @@ class UnraidAPIClient:
         elif supported:
             console.print("[bold yellow]No SMART attributes available[/]")
 
-    def run_query(self, query_type: str, disk_id: str = None):
+    def run_query(self, query_type: str, disk_id: Optional[str] = None):
         """Run a specific query.
 
         Args:
