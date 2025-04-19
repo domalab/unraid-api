@@ -1,6 +1,6 @@
-# robots.txt for https://domalab.github.io/unraid-api/
+# robots.txt for https://unraid-api.domalab.net/
 User-agent: *
 Allow: /
 
 # Sitemap location
-Sitemap: https://domalab.github.io/unraid-api/sitemap.xml
+Sitemap: https://unraid-api.domalab.net/sitemap.xml

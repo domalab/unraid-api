@@ -4,6 +4,12 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Tests](https://github.com/domalab/unraid-api/actions/workflows/test.yml/badge.svg)](https://github.com/domalab/unraid-api/actions/workflows/test.yml)
 
+<p align="center">
+  <img src="unraid-api.png" alt="Unraid API Logo" width="300">
+</p>
+
+**[Full Documentation Available at https://unraid-api.domalab.net](https://unraid-api.domalab.net)**
+
 A comprehensive Python library that provides a clean, intuitive interface to Unraid's GraphQL API. It enables developers to programmatically control and monitor Unraid servers with both synchronous and asynchronous support, strong typing, and intelligent error handling.
 
 ## Features

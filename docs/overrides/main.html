@@ -3,24 +3,24 @@
 {% block extrahead %}
   <!-- Google AdSense -->
   <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7358189775686770" crossorigin="anonymous"></script>
-  
+
   <!-- Open Graph meta tags for better social sharing -->
   <meta property="og:type" content="website" />
   <meta property="og:title" content="{% if page.title %}{{ page.title }} - {% endif %}{{ config.site_name }}" />
   <meta property="og:description" content="{{ config.site_description }}" />
   <meta property="og:url" content="{{ page.canonical_url }}" />
-  
+
   <!-- Twitter Card meta tags -->
   <meta name="twitter:card" content="summary_large_image" />
   <meta name="twitter:title" content="{% if page.title %}{{ page.title }} - {% endif %}{{ config.site_name }}" />
   <meta name="twitter:description" content="{{ config.site_description }}" />
-  
+
   {{ super() }}
 {% endblock %}
 
 {% block content %}
   {{ super() }}
-  
+
   <!-- AdSense Ad unit at the bottom of the content -->
   {% if not page.is_homepage and not config.extra.generator == false %}
     <div class="md-content__inner">
@@ -28,7 +28,6 @@
         <ins class="adsbygoogle"
              style="display:block"
              data-ad-client="ca-pub-7358189775686770"
-             data-ad-slot="1234567890"
              data-ad-format="auto"
              data-full-width-responsive="true"></ins>
         <script>
@@ -37,4 +36,4 @@
       </div>
     </div>
   {% endif %}
-{% endblock %} 
+{% endblock %}
